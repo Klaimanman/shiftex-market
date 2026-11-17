@@ -1,0 +1,43 @@
+# Optional weekly encrypted backup (Supabase Free has no downloadable backups).
+# The dump contains personal data, so it is ALWAYS encrypted with `age` before being
+# stored as a short-lived (7 day) workflow artifact.
+# Secrets:
+#   SUPABASE_DB_URL  – Session pooler connection string (Dashboard → Connect). SECRET.
+#   AGE_RECIPIENT    – your age public key (age1...). Keep the private key offline.
+name: Encrypted database backup
+
+on:
+  schedule:
+    - cron: '41 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check configuration
+        id: cfg
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          AGE: ${{ secrets.AGE_RECIPIENT }}
+        run: |
+          if [ -z "$DB" ] || [ -z "$AGE" ]; then echo "enabled=false" >> "$GITHUB_OUTPUT"; echo "Backup secrets not set — skipping."; else echo "enabled=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Dump and encrypt
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          AGE: ${{ secrets.AGE_RECIPIENT }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq age
+          docker run --rm -e DB="$DB" postgres:17 sh -c 'pg_dump "$DB" --schema=public --no-owner --no-privileges' \
+            | age -r "$AGE" > shiftex-$(date +%F).sql.age
+      - uses: actions/upload-artifact@v4
+        if: steps.cfg.outputs.enabled == 'true'
+        with:
+          name: shiftex-backup
+          path: '*.sql.age'
+          retention-days: 7

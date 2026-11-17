@@ -1,0 +1,10 @@
+Copyright (c) 2026 The ShiftEX Market author. All rights reserved.
+
+The source code in this repository is made publicly visible for review and
+portfolio purposes only. No license is granted to copy, modify, distribute,
+deploy, or use this software, in whole or in part, without prior written
+permission from the copyright holder.
+
+Third-party components are used under their own licenses, including:
+- IBM Plex Sans Hebrew and IBM Plex Mono — SIL Open Font License 1.1
+- React, Vite, Tailwind CSS, Radix UI, TanStack Query, Lucide, Zod, supabase-js — MIT / ISC / Apache-2.0

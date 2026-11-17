@@ -1,0 +1,25 @@
+node_modules/
+dist/
+dev-dist/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+!.env.demo
+
+# Organization-specific setup (real position names etc.)
+supabase/setup/*.local.sql
+supabase/.temp/
+supabase/.branches/
+
+# Local tooling
+.claude/
+
+# Backups
+*.dump
+*.sql.age
