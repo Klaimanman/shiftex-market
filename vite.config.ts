@@ -4,6 +4,23 @@ import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath, URL } from 'node:url';
 
+// Safety net: never let a Supabase *secret* / service_role key be bundled into public JS.
+function assertPublicKey() {
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.VITE_SUPABASE_ANON_KEY ?? '';
+  let isServiceJwt = false;
+  try {
+    isServiceJwt = key.split('.').length === 3 && JSON.parse(Buffer.from(key.split('.')[1], 'base64').toString()).role === 'service_role';
+  } catch {
+    /* not a JWT */
+  }
+  if (key.startsWith('sb_secret_') || isServiceJwt) {
+    throw new Error(
+      'VITE_SUPABASE_PUBLISHABLE_KEY contains a SECRET key. Use the "Publishable key" (sb_publishable_...) instead. Build aborted to protect your database.',
+    );
+  }
+}
+assertPublicKey();
+
 export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
