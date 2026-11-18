@@ -51,7 +51,7 @@ export function giveFitsWants(give: Give, want: Want): MatchResult {
   const differences: string[] = [];
   if (!periodOk) differences.push('משמרת שונה מהמבוקש');
   if (!positionOk) differences.push('עמדה שונה מהמבוקש');
-  if (!optionOk) differences.push('כוללת אופציה ל־12 שעות');
+  if (!optionOk) differences.push('כוללת אופציה ל-12 שעות');
   return { level: 'partial', differences };
 }
 

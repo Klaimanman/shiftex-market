@@ -24,7 +24,7 @@ describe('phone numbers', () => {
 describe('WhatsApp', () => {
   it('builds a correctly encoded wa.me link', () => {
     const text = composeWhatsAppMessage('offer', 'דנה כהן', { date: '2026-11-20', shiftName: 'בוקר', position: 'סיור 50' });
-    expect(text).toBe('היי דנה, ראיתי ב־ShiftEX Market את המודעה על משמרת בוקר בעמדת סיור 50 ביום שישי, 20 בנובמבר. רציתי לבדוק אם היא עדיין רלוונטית.');
+    expect(text).toBe('היי דנה, ראיתי ב-ShiftEX Market את המודעה על משמרת בוקר בעמדת סיור 50 ביום שישי, 20 בנובמבר. רציתי לבדוק אם היא עדיין רלוונטית.');
     const url = buildWhatsAppUrl('+972501234567', text);
     expect(url.startsWith('https://wa.me/972501234567?text=')).toBe(true);
     expect(decodeURIComponent(url.split('text=')[1])).toBe(text);
@@ -36,7 +36,7 @@ describe('coordinator email', () => {
     const { subject, body } = composeCoordinatorEmail({
       date: '2026-11-20', shiftName: 'לילה', position: 'מסוף', giverName: 'א׳ ב׳', receiverName: 'ג׳ ד׳',
     });
-    expect(subject).toBe('בקשה להעברת משמרת — 20.11.2026');
+    expect(subject).toBe('בקשה להעברת משמרת, 20.11.2026');
     expect(body).toContain('מאבטח מוסר: א׳ ב׳');
     expect(body).toContain('מאבטח מקבל: ג׳ ד׳');
     const href = buildMailto('coord@example.com', subject, body);

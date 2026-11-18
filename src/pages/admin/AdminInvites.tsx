@@ -84,7 +84,7 @@ export function AdminInvites() {
                     </>
                   ) : (
                     <span className="text-sm text-muted">
-                      קוד ישן (<Ltr className="font-mono">{i.code_hint}</Ltr>) — לא נשמר לתצוגה. אפשר ליצור קוד חדש.
+                      קוד ישן (<Ltr className="font-mono">{i.code_hint}</Ltr>), לא נשמר לתצוגה. אפשר ליצור קוד חדש.
                     </span>
                   )}
                   {st.active && (
@@ -98,7 +98,7 @@ export function AdminInvites() {
           })}
         </ul>
       )}
-      <Notice className="mt-6">אם קוד דלף מחוץ לצוות — מבטלים אותו ויוצרים חדש. ביטול לא משפיע על עובדים שכבר הצטרפו, וכל הצטרפות עדיין דורשת את האישור שלך.</Notice>
+      <Notice className="mt-6">אם קוד דלף מחוץ לצוות, מבטלים אותו ויוצרים חדש. ביטול לא משפיע על עובדים שכבר הצטרפו, וכל הצטרפות עדיין דורשת את האישור שלך.</Notice>
       {creating && <CreateInviteSheet onClose={() => setCreating(false)} />}
       <ConfirmDialog
         open={!!revoking}

@@ -32,7 +32,7 @@ export function AdminSettings() {
     if (email && !emailSchema.safeParse(email).success) errs.email = 'כתובת מייל לא תקינה';
     const n = (v: string, min: number, max: number, k: string) => {
       const x = Number(v);
-      if (!Number.isInteger(x) || x < min || x > max) errs[k] = `מספר בין ${min} ל־${max}`;
+      if (!Number.isInteger(x) || x < min || x > max) errs[k] = `מספר בין ${min} ל-${max}`;
       return x;
     };
     const a = n(maxActive, 1, 100, 'maxActive');

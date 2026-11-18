@@ -163,7 +163,7 @@ function MemberSheet({ member: m, onClose }: { member: AdminMember; onClose: () 
           </div>
           <div className="flex justify-between gap-4 px-3 py-2.5">
             <dt className="text-muted">טלפון</dt>
-            <dd><Ltr className="tabular font-mono">{formatILMobile(m.phone) || '—'}</Ltr></dd>
+            <dd><Ltr className="tabular font-mono">{formatILMobile(m.phone) || ''}</Ltr></dd>
           </div>
           {m.status_reason && (
             <div className="flex justify-between gap-4 px-3 py-2.5">
@@ -175,7 +175,7 @@ function MemberSheet({ member: m, onClose }: { member: AdminMember; onClose: () 
 
         <div>
           <p className="mb-2 text-sm font-medium">תגים</p>
-          {m.status === 'pending' && m.self_selected && <Notice className="mb-3">התגים נבחרו על ידי העובד/ת בהרשמה — יש לוודא שהם נכונים לפני האישור.</Notice>}
+          {m.status === 'pending' && m.self_selected && <Notice className="mb-3">התגים נבחרו על ידי העובד/ת בהרשמה, יש לוודא שהם נכונים לפני האישור.</Notice>}
           <div className="flex flex-wrap gap-2">
             {(badges.data?.badges ?? []).map((b) => (
               <Chip key={b.id} selected={badgeIds.includes(b.id)} onToggle={() => setBadgeIds((s) => (s.includes(b.id) ? s.filter((x) => x !== b.id) : [...s, b.id]))}>
@@ -197,7 +197,7 @@ function MemberSheet({ member: m, onClose }: { member: AdminMember; onClose: () 
         </div>
 
         {isSelf ? (
-          <Notice>זה החשבון שלך — אי אפשר לשנות לו סטטוס מכאן.</Notice>
+          <Notice>זה החשבון שלך, אי אפשר לשנות לו סטטוס מכאן.</Notice>
         ) : (
           <div className="space-y-3">
             <p className="text-sm font-medium">פעולות</p>

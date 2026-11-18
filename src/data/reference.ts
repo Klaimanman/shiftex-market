@@ -89,11 +89,11 @@ export function useReference(): { ref: Reference | null; isLoading: boolean; err
     const periodTimes = (id: string | null | undefined) => {
       const pr = id ? periodById.get(id) : undefined;
       if (!pr?.start_time || !pr?.end_time) return null;
-      return `${formatTime(pr.start_time)}–${formatTime(pr.end_time)}`;
+      return `${formatTime(pr.start_time)}-${formatTime(pr.end_time)}`;
     };
     const periodLabel = (id: string | null | undefined) => {
       const pr = id ? periodById.get(id) : undefined;
-      return pr ? pr.label || PERIOD_FALLBACK[pr.code] : '—';
+      return pr ? pr.label || PERIOD_FALLBACK[pr.code] : '';
     };
     return {
       periods: p.data,
@@ -101,11 +101,11 @@ export function useReference(): { ref: Reference | null; isLoading: boolean; err
       periodById,
       positionById,
       periodLabel,
-      positionName: (id) => (id ? positionById.get(id)?.name ?? '—' : '—'),
+      positionName: (id) => (id ? positionById.get(id)?.name ?? '' : ''),
       periodTimes,
       shiftTitle: (l) => l.custom_title || periodLabel(l.period_id),
       shiftTimes: (l) =>
-        l.custom_start && l.custom_end ? `${formatTime(l.custom_start)}–${formatTime(l.custom_end)}` : periodTimes(l.period_id),
+        l.custom_start && l.custom_end ? `${formatTime(l.custom_start)}-${formatTime(l.custom_end)}` : periodTimes(l.period_id),
     };
   }, [p.data, q.data]);
   return {

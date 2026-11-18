@@ -38,7 +38,7 @@ export function EmailDraftSheet({ open, onOpenChange, data }: { open: boolean; o
       onOpenChange={onOpenChange}
       size="lg"
       title="טיוטת מייל לרכז השיבוץ"
-      description="הטיוטה נפתחת באפליקציית המייל שלך. השליחה והאישור הרשמי מתבצעים שם — לא ב־ShiftEX."
+      description="הטיוטה נפתחת באפליקציית המייל שלך. השליחה והאישור הרשמי מתבצעים שם, לא ב-ShiftEX."
       footer={
         <div className="flex gap-2">
           <a

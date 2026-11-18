@@ -50,11 +50,11 @@ export function AdminDashboard() {
               <Stat label="ממתינים לאישור" value={s.pending} to="/admin/members?status=pending" />
               <Stat label="מושעים / חסומים" value={s.suspended} to="/admin/members?status=restricted" />
               <Stat label="מודעות פתוחות" value={s.open_listings} to="/admin/listings" />
-              <Stat label="מודעות ב־7 הימים האחרונים" value={s.listings_7d} />
+              <Stat label="מודעות ב-7 הימים האחרונים" value={s.listings_7d} />
               <Stat label="משמרות שנלקחו (30 יום)" value={s.closed_taken_30d} />
             </div>
           </Section>
-          <Notice className="mt-8">כל פעולת ניהול נרשמת ביומן הפעולות. הרשאות נאכפות בשרת — גם אם מישהו עוקף את הממשק.</Notice>
+          <Notice className="mt-8">כל פעולת ניהול נרשמת ביומן הפעולות. הרשאות נאכפות בשרת, גם אם מישהו עוקף את הממשק.</Notice>
         </>
       )}
     </>

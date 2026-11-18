@@ -44,7 +44,7 @@ export function ProfilePage() {
           <dl className="divide-y divide-line text-sm">
             <div className="flex justify-between gap-4 px-4 py-3">
               <dt className="text-muted">טלפון נייד</dt>
-              <dd>{me.phone ? <Ltr className="tabular font-mono">{formatILMobile(me.phone)}</Ltr> : '—'}</dd>
+              <dd>{me.phone ? <Ltr className="tabular font-mono">{formatILMobile(me.phone)}</Ltr> : ''}</dd>
             </div>
             <div className="flex justify-between gap-4 px-4 py-3">
               <dt className="text-muted">מייל</dt>

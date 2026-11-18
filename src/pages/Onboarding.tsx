@@ -159,7 +159,7 @@ export function JoinFlow({ reapply = false }: { reapply?: boolean }) {
       <>
         {!reapply && <Stepper step={1} />}
         <h1 className="text-xl font-semibold">{reapply ? 'הגשת בקשה חדשה' : 'קוד הזמנה'}</h1>
-        <p className="mt-1 text-sm text-muted">הקוד מתקבל מההנהלה. הוא מצרף אותך לארגון — הגישה נפתחת אחרי אישור.</p>
+        <p className="mt-1 text-sm text-muted">הקוד מתקבל מההנהלה. הוא מצרף אותך לארגון, הגישה נפתחת אחרי אישור.</p>
         <form onSubmit={check} className="mt-6 space-y-5" noValidate>
           <Field label="קוד" error={error}>
             <Input
@@ -187,10 +187,10 @@ export function JoinFlow({ reapply = false }: { reapply?: boolean }) {
       {!reapply && <Stepper step={2} />}
       <h1 className="text-xl font-semibold">התגים שלך</h1>
       <p className="mt-1 text-sm text-muted">
-        הצטרפות אל <span className="font-medium text-ink">{preview.org_name}</span>. יש לבחור את התגים וההסמכות שלך — ההנהלה תאשר אותם יחד עם החשבון.
+        הצטרפות אל <span className="font-medium text-ink">{preview.org_name}</span>. יש לבחור את התגים וההסמכות שלך, ההנהלה תאשר אותם יחד עם החשבון.
       </p>
       <div className="mt-6 space-y-2" role="group" aria-label="תגים">
-        {(preview.badges ?? []).length === 0 && <Notice>עדיין לא הוגדרו תגים בארגון. אפשר להמשיך — ההנהלה תוסיף אותם בהמשך.</Notice>}
+        {(preview.badges ?? []).length === 0 && <Notice>עדיין לא הוגדרו תגים בארגון. אפשר להמשיך, ההנהלה תוסיף אותם בהמשך.</Notice>}
         {(preview.badges ?? []).map((b) => {
           const on = selected.includes(b.id);
           return (

@@ -116,12 +116,12 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
       {!open && (
         <Notice tone={l.status === 'removed_by_admin' ? 'danger' : 'info'} className="mb-4">
           {l.status === 'closed_taken'
-            ? 'המודעה נסגרה — המשמרת נלקחה.'
+            ? 'המודעה נסגרה כי המשמרת נלקחה.'
             : l.status === 'closed_cancelled'
               ? 'המודעה בוטלה.'
               : l.status === 'removed_by_admin'
                 ? `המודעה הוסרה על ידי ההנהלה${l.removed_reason && l.removed_reason !== 'member_inactive' ? `: ${l.removed_reason}` : '.'}`
-                : 'תוקף המודעה פג — המשמרת כבר התחילה.'}
+                : 'תוקף המודעה פג כי המשמרת כבר התחילה.'}
         </Notice>
       )}
 
@@ -171,7 +171,7 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
               </Row>
               <Row label="משמרות">{l.want_period_ids.length ? l.want_period_ids.map((p) => r.periodLabel(p)).join(' / ') : 'כל משמרת'}</Row>
               <Row label="עמדות">{l.want_position_ids.map((p) => r.positionName(p)).join(', ')}</Row>
-              <Row label="אופציה ל־12 שעות">{l.want_option_ok ? 'מתאים' : 'לא מתאים'}</Row>
+              <Row label="אופציה ל-12 שעות">{l.want_option_ok ? 'מתאים' : 'לא מתאים'}</Row>
             </>
           )}
         </dl>
@@ -197,7 +197,7 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
         <div className="mt-4 space-y-3">
           {locked && (
             <Notice tone="warn">
-              עמדת {r.positionName(l.position_id)} דורשת הסמכה שאין בפרופיל שלך, ולכן אי אפשר לבקש את המשמרת הזו. אם זו טעות — ההנהלה יכולה לעדכן את התגים.
+              עמדת {r.positionName(l.position_id)} דורשת הסמכה שאין בפרופיל שלך, ולכן אי אפשר לבקש את המשמרת הזו. אם זו טעות, ההנהלה יכולה לעדכן את התגים.
             </Notice>
           )}
           <div className="grid gap-2 sm:grid-cols-[1fr_auto_auto]">
@@ -286,7 +286,7 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
         userId={contactOpen?.userId}
         buildMessage={(name) =>
           contactOpen?.userId
-            ? `היי ${name.split(' ')[0]}, ראיתי ב־ShiftEX Market שהבעת עניין במודעה שלי (${l.shift_date ? formatShort(l.shift_date) : wantedSummary(l, r)}). מתאים לדבר?`
+            ? `היי ${name.split(' ')[0]}, ראיתי ב-ShiftEX Market שהבעת עניין במודעה שלי (${l.shift_date ? formatShort(l.shift_date) : wantedSummary(l, r)}). מתאים לדבר?`
             : waMessage(name)
         }
         key={contactOpen?.userId ?? 'owner'}
@@ -351,7 +351,7 @@ function InterestRow({
           {i.offered_listing_id && (
             <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-2">
               <ArrowLeftRight className="size-3.5" aria-hidden="true" />
-              מציע/ה משמרת בתמורה —{' '}
+              מציע/ה משמרת בתמורה:{' '}
               <ButtonLink to={`/listing/${i.offered_listing_id}`} variant="quiet" size="sm" className="h-7 px-1.5">
                 צפייה
               </ButtonLink>

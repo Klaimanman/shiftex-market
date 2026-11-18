@@ -125,7 +125,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Mobile top bar */}
         <header className="pt-safe sticky top-0 z-30 border-b border-line bg-bg/90 backdrop-blur-md lg:hidden">
           <div className="flex h-14 items-center justify-between px-4">
-            <Link to="/" aria-label="ShiftEX Market — בית">
+            <Link to="/" aria-label="ShiftEX Market, דף הבית">
               <Logo withMarket={false} />
             </Link>
             <div className="flex items-center gap-0.5">

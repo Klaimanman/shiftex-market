@@ -18,7 +18,7 @@ type Kind = 'offers' | 'seeks';
 const COPY: Record<Kind, { title: string; subtitle: string; empty: string; cta: string; newType: string }> = {
   offers: {
     title: 'מסירות משמרת',
-    subtitle: 'כל המשמרות שעמיתים מוסרים או מציעים להחלפה — לפי תאריך.',
+    subtitle: 'כל המשמרות שעמיתים מוסרים או מציעים להחלפה, לפי תאריך.',
     empty: 'אין כרגע משמרות למסירה',
     cta: 'מסירת משמרת',
     newType: 'offer',

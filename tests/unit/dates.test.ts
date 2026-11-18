@@ -18,14 +18,14 @@ describe('week calculations (Sunday start)', () => {
     const days = weekDays(startOfWeek('2026-12-02'));
     expect(days[0]).toBe('2026-11-29');
     expect(days[6]).toBe('2026-12-05');
-    expect(formatWeekRange(days[0])).toBe('29 בנובמבר – 5 בדצמבר 2026');
+    expect(formatWeekRange(days[0])).toBe('29 בנובמבר - 5 בדצמבר 2026');
   });
 
   it('crosses a year boundary', () => {
     const days = weekDays(startOfWeek('2027-01-01'));
     expect(days[0]).toBe('2026-12-27');
     expect(days[6]).toBe('2027-01-02');
-    expect(formatWeekRange(days[0])).toBe('27 בדצמבר 2026 – 2 בינואר 2027');
+    expect(formatWeekRange(days[0])).toBe('27 בדצמבר 2026 - 2 בינואר 2027');
   });
 
   it('handles leap years', () => {
@@ -46,8 +46,8 @@ describe('week calculations (Sunday start)', () => {
   });
 
   it('same-month range format (numeric range isolated as LTR)', () => {
-    expect(formatWeekRange('2026-11-15')).toBe('⁦15–21⁩ בנובמבר 2026');
-    expect(stripBidi(formatWeekRange('2026-11-15'))).toBe('15–21 בנובמבר 2026');
+    expect(formatWeekRange('2026-11-15')).toBe('⁦15-21⁩ בנובמבר 2026');
+    expect(stripBidi(formatWeekRange('2026-11-15'))).toBe('15-21 בנובמבר 2026');
   });
 
   it('formats long Hebrew dates', () => {

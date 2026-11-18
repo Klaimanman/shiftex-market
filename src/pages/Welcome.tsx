@@ -20,9 +20,9 @@ function GoogleIcon() {
 }
 
 const POINTS = [
-  { icon: CalendarRange, title: 'לוח שבועי אחד', body: 'כל המשמרות שמוסרים, מחפשים ומחליפים — לפי תאריך ומשמרת, במקום גלילה בקבוצות.' },
+  { icon: CalendarRange, title: 'לוח שבועי אחד', body: 'כל המשמרות שמוסרים, מחפשים ומחליפים, לפי תאריך ומשמרת, במקום גלילה בקבוצות.' },
   { icon: ArrowLeftRight, title: 'התאמות מדויקות', body: 'המערכת מציגה רק משמרות שמתאימות להסמכות שלך, ומתריעה כשמשהו רלוונטי עולה.' },
-  { icon: MessageCircle, title: 'סגירה בוואטסאפ', body: 'פנייה ישירה עם הודעה מוכנה, וטיוטת מייל לרכז השיבוץ — הכול בשליטתך.' },
+  { icon: MessageCircle, title: 'סגירה בוואטסאפ', body: 'פנייה ישירה עם הודעה מוכנה, וטיוטת מייל לרכז השיבוץ, הכול בשליטתך.' },
 ];
 
 export function WelcomePage() {
@@ -53,7 +53,7 @@ export function WelcomePage() {
             <span className="text-muted">מסודר, הוגן ופרטי.</span>
           </h1>
           <p className="mt-4 max-w-md text-md text-ink-2">
-            מקום אחד למסור משמרת, למצוא משמרת או להתחלף — בלי לאבד הודעות בקבוצות.
+            מקום אחד למסור משמרת, למצוא משמרת או להתחלף, בלי לאבד הודעות בקבוצות.
           </p>
 
           <div className="mt-8 max-w-sm space-y-3">

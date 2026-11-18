@@ -25,10 +25,10 @@ export function ContactPage() {
       return;
     }
     setError(null);
-    const body = [message.trim(), '', '—', name.trim() ? `שם: ${name.trim()}` : '', `נשלח מ: ${window.location.origin}`, `דפדפן: ${navigator.userAgent}`]
+    const body = [message.trim(), '', '', name.trim() ? `שם: ${name.trim()}` : '', `נשלח מ: ${window.location.origin}`, `דפדפן: ${navigator.userAgent}`]
       .filter((l, i, a) => l !== '' || a[i - 1] !== '')
       .join('\n');
-    window.location.href = buildMailto(CONTACT_EMAIL, `ShiftEX Market — ${TOPICS[topic]}`, body);
+    window.location.href = buildMailto(CONTACT_EMAIL, `ShiftEX Market: ${TOPICS[topic]}`, body);
   };
 
   return (

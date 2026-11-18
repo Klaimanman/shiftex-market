@@ -223,7 +223,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
                 }`}
               >
                 <span className="font-medium">משמרת מיוחדת</span>
-                <span className="text-xs text-muted">משמרת שאינה מהקבועות — עם שם, פירוט ושעות משלה</span>
+                <span className="text-xs text-muted">משמרת שאינה מהקבועות, עם שם, פירוט ושעות משלה</span>
               </button>
             </div>
           </FieldGroup>
@@ -256,7 +256,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
           </FieldGroup>
 
           <div className="divide-y divide-line rounded-md border border-line px-3">
-            <Switch checked={v.hasOption} onChange={(x) => set('hasOption', x)} label={OPTION_LABEL} description="המשמרת יכולה להתארך ל־12 שעות. לא מניחים שהאופציה תופעל." />
+            <Switch checked={v.hasOption} onChange={(x) => set('hasOption', x)} label={OPTION_LABEL} description="המשמרת יכולה להתארך ל-12 שעות. לא מניחים שהאופציה תופעל." />
             {!special && (
               <Switch checked={v.isCustom} onChange={(x) => set('isCustom', x)} label="שם או שעות שונים" description="משמרת קבועה עם שם אחר או שעות שונות מהרגיל." />
             )}
@@ -323,7 +323,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
           </FieldGroup>
 
           <div className="rounded-md border border-line px-3">
-            <Switch checked={v.wantOptionOk} onChange={(x) => set('wantOptionOk', x)} label="מתאים גם עם אופציה ל־12 שעות" />
+            <Switch checked={v.wantOptionOk} onChange={(x) => set('wantOptionOk', x)} label="מתאים גם עם אופציה ל-12 שעות" />
           </div>
         </Panel>
       )}

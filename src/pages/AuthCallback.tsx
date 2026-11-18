@@ -37,7 +37,7 @@ export function AuthCallbackPage() {
     });
     supabase.auth.getSession().then(({ data }) => data.session && finish());
     const t = window.setTimeout(() => {
-      if (!done) setError('לא הצלחנו להשלים את הכניסה. ייתכן שהקישור פג תוקף — אפשר לנסות שוב.');
+      if (!done) setError('לא הצלחנו להשלים את הכניסה. ייתכן שהקישור פג תוקף. אפשר לנסות שוב.');
     }, 12_000);
     return () => {
       sub.subscription.unsubscribe();

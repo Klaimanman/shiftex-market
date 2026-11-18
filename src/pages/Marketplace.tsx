@@ -190,7 +190,7 @@ export function MarketplacePage() {
         {g.flexible.length > 0 && (
           <div>
             <h3 className="mb-2 text-sm font-semibold text-ink-2">
-              גמיש — כל משמרת <span className="tabular text-xs font-normal text-muted">· {g.flexible.length}</span>
+              גמיש: כל משמרת <span className="tabular text-xs font-normal text-muted">· {g.flexible.length}</span>
             </h3>
             <div className="grid gap-2 md:grid-cols-2">
               {g.flexible.map((l) => (

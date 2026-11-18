@@ -9,10 +9,10 @@ const DONE = [
   'ממשק מלא בעברית עם כיווניות מימין לשמאל, ותמיכה נכונה בטקסט משולב (מספרי טלפון, שעות, מיילים).',
   'ניווט מלא במקלדת: קישור "דילוג לתוכן", סימון פוקוס ברור, חלונות קופצים שלוכדים פוקוס ונסגרים ב-Esc, וקבוצות בחירה שעובדות עם החצים.',
   'תמיכה בקוראי מסך: כותרות מסודרות, תוויות לכל שדה, הודעות שגיאה שמוקראות אוטומטית, והודעות מערכת באזור חי (aria-live).',
-  'ניגודיות צבעים ברמה AA בשני מצבי התצוגה — בהיר וכהה.',
+  'ניגודיות צבעים ברמה AA בשני מצבי התצוגה: בהיר וכהה.',
   'מידע לא מועבר באמצעות צבע בלבד: לכל סוג מודעה ומשמרת יש גם תווית טקסט.',
   'אזורי לחיצה גדולים לשימוש נוח בטלפון, ואפשרות הגדלה של הדף (זום) ללא הגבלה.',
-  'כיבוד ההגדרה "הפחתת תנועה" של מערכת ההפעלה — אנימציות מבוטלות.',
+  'כיבוד ההגדרה "הפחתת תנועה" של מערכת ההפעלה (האנימציות מתבטלות).',
   'שעות מוצגות בפורמט 24 שעות, ותאריכים בעברית.',
 ];
 
@@ -54,7 +54,7 @@ export function AccessibilityPage() {
           <h2 className="font-semibold">נתקלת בבעיית נגישות?</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-2">
             נשמח לדעת ולתקן. אפשר לפנות במייל{' '}
-            <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('ShiftEX Market — נגישות')}`} className="font-medium text-accent underline underline-offset-2">
+            <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('ShiftEX Market: נגישות')}`} className="font-medium text-accent underline underline-offset-2">
               <Ltr>{CONTACT_EMAIL}</Ltr>
             </a>{' '}
             או דרך <Link to="/contact" className="font-medium text-accent underline underline-offset-2">טופס יצירת הקשר</Link>. כדאי לציין

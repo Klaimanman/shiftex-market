@@ -13,7 +13,7 @@ export const TYPE_TITLE: Record<ListingType, string> = {
 };
 
 export const TYPE_HINT: Record<ListingType, string> = {
-  offer: 'יש לך משמרת שלא מתאימה לך — לפרסם אותה למי שרוצה לקחת.',
+  offer: 'יש לך משמרת שלא מתאימה לך? אפשר לפרסם אותה למי שרוצה לקחת.',
   seek: 'מחפשים משמרת נוספת בתאריכים מסוימים.',
   exchange: 'להציע משמרת שלך תמורת משמרת אחרת.',
 };
@@ -21,8 +21,8 @@ export const TYPE_HINT: Record<ListingType, string> = {
 export const STATUS_LABEL: Record<ListingStatus, string> = {
   active: 'פעילה',
   in_coordination: 'בתיאום',
-  closed_taken: 'נסגרה — נלקחה',
-  closed_cancelled: 'נסגרה — בוטלה',
+  closed_taken: 'נלקחה',
+  closed_cancelled: 'בוטלה',
   expired: 'פג תוקף',
   removed_by_admin: 'הוסרה ע״י ההנהלה',
 };
@@ -43,4 +43,4 @@ export const PERIOD_FALLBACK: Record<PeriodCode, string> = {
   port: 'נמל',
 };
 
-export const OPTION_LABEL = 'אופציה ל־12 שעות';
+export const OPTION_LABEL = 'אופציה ל-12 שעות';

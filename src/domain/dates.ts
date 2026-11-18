@@ -97,10 +97,10 @@ export function formatWeekRange(weekStart: ISODate): string {
   const end = addDays(weekStart, 6);
   const [y1, m1, d1] = parts(weekStart);
   const [y2, m2, d2] = parts(end);
-  if (y1 !== y2) return `${d1} ב${MONTHS_HE[m1 - 1]} ${y1} – ${d2} ב${MONTHS_HE[m2 - 1]} ${y2}`;
-  if (m1 !== m2) return `${d1} ב${MONTHS_HE[m1 - 1]} – ${d2} ב${MONTHS_HE[m2 - 1]} ${y2}`;
+  if (y1 !== y2) return `${d1} ב${MONTHS_HE[m1 - 1]} ${y1} - ${d2} ב${MONTHS_HE[m2 - 1]} ${y2}`;
+  if (m1 !== m2) return `${d1} ב${MONTHS_HE[m1 - 1]} - ${d2} ב${MONTHS_HE[m2 - 1]} ${y2}`;
   // LRI…PDI keeps "15–21" in reading order inside right-to-left text.
-  return `⁦${d1}–${d2}⁩ ב${MONTHS_HE[m1 - 1]} ${y1}`;
+  return `⁦${d1}-${d2}⁩ ב${MONTHS_HE[m1 - 1]} ${y1}`;
 }
 
 /** Strip Unicode bidi isolates (for comparisons / plain-text output). */

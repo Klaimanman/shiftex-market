@@ -61,7 +61,7 @@ export function ContactSheet({
       open={open}
       onOpenChange={onOpenChange}
       title="פנייה בוואטסאפ"
-      description="ההודעה לא נשלחת אוטומטית — היא נפתחת בוואטסאפ, ושם אפשר לערוך ולשלוח."
+      description="ההודעה לא נשלחת אוטומטית. היא נפתחת בוואטסאפ, ושם אפשר לערוך ולשלוח."
       footer={
         contact?.phone ? (
           <div className="flex gap-2">

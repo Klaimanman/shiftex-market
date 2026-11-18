@@ -95,9 +95,9 @@ export function FilterSheet({
           </div>
         </FieldGroup>
 
-        <FieldGroup legend="אופציה ל־12 שעות">
+        <FieldGroup legend="אופציה ל-12 שעות">
           <Segmented
-            label="אופציה ל־12 שעות"
+            label="אופציה ל-12 שעות"
             value={optionValue}
             onChange={(v) => setDraft({ ...draft, option: v === 'any' ? null : v === 'with' })}
             options={[

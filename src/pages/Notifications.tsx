@@ -14,7 +14,7 @@ import { cn } from '@/lib/cn';
 
 function describe(n: AppNotification, r: Reference | null): { title: string; body?: string; to?: string } {
   const l = n.listing;
-  const shift = l && r ? (l.type === 'seek' ? `חיפוש ל־${l.want_dates.map(formatShort).join(', ')}` : `${r.shiftTitle(l)} · ${r.positionName(l.position_id)}${l.shift_date ? ` · ${formatShort(l.shift_date)}` : ''}`) : undefined;
+  const shift = l && r ? (l.type === 'seek' ? `חיפוש ל-${l.want_dates.map(formatShort).join(', ')}` : `${r.shiftTitle(l)} · ${r.positionName(l.position_id)}${l.shift_date ? ` · ${formatShort(l.shift_date)}` : ''}`) : undefined;
   const actor = n.actor?.full_name;
   const to = l ? `/listing/${l.id}` : undefined;
   switch (n.kind) {
@@ -33,7 +33,7 @@ function describe(n: AppNotification, r: Reference | null): { title: string; bod
     case 'listing_removed':
       return { title: 'ההנהלה הסירה מודעה שלך', body: n.payload.reason && n.payload.reason !== 'member_inactive' ? String(n.payload.reason) : shift, to };
     case 'account_approved':
-      return { title: 'החשבון אושר — הלוח פתוח לשימוש', to: '/' };
+      return { title: 'החשבון אושר, הלוח פתוח לשימוש', to: '/' };
     case 'account_status':
       return { title: 'סטטוס החשבון עודכן', to: '/profile' };
     case 'member_pending':

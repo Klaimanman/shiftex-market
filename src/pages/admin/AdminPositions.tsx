@@ -106,7 +106,7 @@ function PositionSheet({ position, onClose }: { position: Position | null; onClo
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
         title="למחוק את העמדה?"
-        body="אם קיימות מודעות בעמדה הזו, המחיקה תיחסם — אפשר להשבית אותה במקום."
+        body="אם קיימות מודעות בעמדה הזו, המחיקה תיחסם, אפשר להשבית אותה במקום."
         confirmLabel="מחיקה"
         tone="danger"
         onConfirm={async () => {

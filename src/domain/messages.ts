@@ -31,11 +31,11 @@ export function composeWhatsAppMessage(type: ListingType, recipientName: string,
   const hi = `היי ${firstName(recipientName)},`.replace(' ,', ',');
   switch (type) {
     case 'offer':
-      return `${hi} ראיתי ב־ShiftEX Market את המודעה על ${describeShift(shift)}. רציתי לבדוק אם היא עדיין רלוונטית.`;
+      return `${hi} ראיתי ב-ShiftEX Market את המודעה על ${describeShift(shift)}. רציתי לבדוק אם היא עדיין רלוונטית.`;
     case 'exchange':
-      return `${hi} ראיתי ב־ShiftEX Market את ההצעה להחלפת ${describeShift(shift)}. אשמח לבדוק אם נוכל להתחלף.`;
+      return `${hi} ראיתי ב-ShiftEX Market את ההצעה להחלפת ${describeShift(shift)}. אשמח לבדוק אם נוכל להתחלף.`;
     case 'seek':
-      return `${hi} ראיתי ב־ShiftEX Market שמחפשים ${wantedSummary || 'משמרת'}. ייתכן שיש לי משמרת שמתאימה — רציתי לבדוק אם זה עדיין רלוונטי.`;
+      return `${hi} ראיתי ב-ShiftEX Market שמחפשים ${wantedSummary || 'משמרת'}. ייתכן שיש לי משמרת שמתאימה, רציתי לבדוק אם זה עדיין רלוונטי.`;
   }
 }
 
@@ -55,7 +55,7 @@ export interface TransferEmail {
 
 export function composeCoordinatorEmail(e: TransferEmail): { subject: string; body: string } {
   const dateText = e.date ? formatNumeric(e.date) : '';
-  const subject = e.isExchange ? `בקשה להחלפת משמרות — ${dateText}` : `בקשה להעברת משמרת — ${dateText}`;
+  const subject = e.isExchange ? `בקשה להחלפת משמרות, ${dateText}` : `בקשה להעברת משמרת, ${dateText}`;
   const lines = [
     'שלום,',
     '',
@@ -69,7 +69,7 @@ export function composeCoordinatorEmail(e: TransferEmail): { subject: string; bo
   ];
   if (e.isExchange) lines.push(`משמרת בתמורה: ${e.returnShift ?? ''}`);
   lines.push('', 'תודה רבה.');
-  return { subject: subject.trim().replace(/ —\s*$/, ''), body: lines.join('\n') };
+  return { subject: subject.trim().replace(/,\s*$/, ''), body: lines.join('\n') };
 }
 
 /** RFC 6068 mailto with CRLF line breaks. The address itself is not percent-encoded. */
