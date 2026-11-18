@@ -10,6 +10,7 @@ import { useMe } from '@/data/session';
 import { useReference } from '@/data/reference';
 import { useOpenListings, useWeekListings } from '@/data/listings';
 import { useAdminStats } from '@/data/admin';
+import { GroupCodeCard } from './admin/GroupCodeCard';
 import { isOpen } from '@/domain/matching';
 import { weekCounts } from '@/domain/marketplace';
 import { firstName } from '@/domain/messages';
@@ -55,6 +56,11 @@ export function HomePage() {
       </header>
 
       {me.isAdmin && <AdminNotice />}
+      {me.isAdmin && (
+        <div className="mb-6">
+          <GroupCodeCard />
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-2">
         {ACTIONS.map(({ type, title, icon: Icon }) => (

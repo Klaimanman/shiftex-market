@@ -11,7 +11,7 @@ import { useCreateInvite, useInvites, useRevokeInvite, type Invite } from '@/dat
 import { addDays, formatNumeric, instantToISODate, todayIL, zonedToInstant } from '@/domain/dates';
 import { cn } from '@/lib/cn';
 
-export const UNLIMITED_USES = 1_000_000;
+import { GroupCodeCard, isPermanent, UNLIMITED_USES } from './GroupCodeCard';
 
 function inviteState(i: Invite): { label: string; tone: 'accent' | 'neutral' | 'danger'; active: boolean } {
   if (i.revoked_at) return { label: 'בוטל', tone: 'danger', active: false };
@@ -44,9 +44,11 @@ export function AdminInvites() {
     <>
       <PageHeader
         title="קודי הזמנה"
-        subtitle="קוד מצרף עובד לארגון במצב ״ממתין לאישור״. רק מנהלים רואים את הקודים."
-        actions={<Button size="sm" icon={<Plus className="size-4" aria-hidden="true" />} onClick={() => setCreating(true)}>קוד חדש</Button>}
+        subtitle="קוד מצרף עובד לקבוצה במצב ״ממתין לאישור״. רק מנהלים רואים את הקודים."
+        actions={<Button variant="secondary" size="sm" icon={<Plus className="size-4" aria-hidden="true" />} onClick={() => setCreating(true)}>קוד זמני</Button>}
       />
+      <GroupCodeCard />
+      <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-muted">כל הקודים</h2>
       {q.isLoading ? <ListSkeleton rows={2} /> : q.error ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : !q.data?.length ? (
         <Panel><EmptyState title="אין קודי הזמנה" body="יוצרים קוד קבוע ושולחים אותו לעובדים בערוץ פנימי." action={<Button onClick={() => setCreating(true)}>יצירת קוד</Button>} /></Panel>
       ) : (
@@ -87,7 +89,7 @@ export function AdminInvites() {
                       קוד ישן (<Ltr className="font-mono">{i.code_hint}</Ltr>), לא נשמר לתצוגה. אפשר ליצור קוד חדש.
                     </span>
                   )}
-                  {st.active && (
+                  {st.active && !isPermanent(i) && (
                     <Button variant="ghost" size="sm" className="ms-auto text-danger" onClick={() => setRevoking(i)}>
                       ביטול הקוד
                     </Button>
@@ -98,7 +100,7 @@ export function AdminInvites() {
           })}
         </ul>
       )}
-      <Notice className="mt-6">אם קוד דלף מחוץ לצוות, מבטלים אותו ויוצרים חדש. ביטול לא משפיע על עובדים שכבר הצטרפו, וכל הצטרפות עדיין דורשת את האישור שלך.</Notice>
+      <Notice className="mt-6">את הקוד הקבוע מחליפים מהכרטיס למעלה, כך שתמיד יש קוד פעיל. קוד זמני מתאים למשל לגיוס חד פעמי עם תאריך תפוגה.</Notice>
       {creating && <CreateInviteSheet onClose={() => setCreating(false)} />}
       <ConfirmDialog
         open={!!revoking}
@@ -125,8 +127,8 @@ function CreateInviteSheet({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const copy = useCopy();
   const create = useCreateInvite();
-  const [label, setLabel] = useState('קוד קבוע');
-  const [permanent, setPermanent] = useState(true);
+  const [label, setLabel] = useState('');
+  const [permanent, setPermanent] = useState(false);
   const [maxUses, setMaxUses] = useState('50');
   const [days, setDays] = useState('30');
   const [code, setCode] = useState<string | null>(null);

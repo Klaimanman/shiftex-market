@@ -3,6 +3,7 @@ import { ChevronLeft } from 'lucide-react';
 import { PageHeader, Panel, Section } from '@/components/PageHeader';
 import { ErrorState, Notice, Skeleton } from '@/components/ui/feedback';
 import { useAdminStats } from '@/data/admin';
+import { GroupCodeCard } from './GroupCodeCard';
 
 function Stat({ label, value, to }: { label: string; value: number | string; to?: string }) {
   const body = (
@@ -27,6 +28,9 @@ export function AdminDashboard() {
   return (
     <>
       <PageHeader title="סקירה" subtitle="מצב הארגון והמשימות שמחכות לטיפול." />
+      <div className="mb-8">
+        <GroupCodeCard />
+      </div>
       {q.error ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !s ? (
