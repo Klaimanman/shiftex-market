@@ -29,6 +29,21 @@ const queryClient = new QueryClient({
   },
 });
 
+// When a new version is deployed, the new service worker takes control; reload once so
+// users never keep running an old copy of the app. Also check for updates when the app
+// comes back to the foreground.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    reloading = true;
+    window.location.reload();
+  });
+  const check = () => navigator.serviceWorker.getRegistration().then((r) => r?.update()).catch(() => {});
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && check());
+  window.setInterval(check, 30 * 60 * 1000);
+}
+
 async function boot() {
   // Dev-only fictional backend for UI review (`npm run dev:demo`). Removed from production builds.
   if (import.meta.env.DEV && import.meta.env.VITE_DEMO === '1') {

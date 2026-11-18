@@ -53,6 +53,9 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         // Precache app shell + only the Hebrew/Latin woff2 subsets actually used.
         globPatterns: ['**/*.{js,css,html,svg,png}', '**/*-hebrew-*.woff2', '**/*-latin-[0-9]*.woff2'],
         // API traffic (Supabase) is never cached by the service worker.
