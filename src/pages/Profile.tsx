@@ -81,6 +81,12 @@ export function ProfilePage() {
           <Link to="/privacy" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
             פרטיות ושימוש במידע <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
           </Link>
+          <Link to="/accessibility" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
+            הצהרת נגישות <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
+          </Link>
+          <Link to="/contact" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
+            יצירת קשר עם המפתחים <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
+          </Link>
         </Panel>
         <Button variant="secondary" className="mt-4 w-full sm:w-auto" icon={<LogOut className="size-4" aria-hidden="true" />} onClick={() => signOut()}>
           יציאה מהחשבון

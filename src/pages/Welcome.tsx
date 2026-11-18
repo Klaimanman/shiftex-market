@@ -97,6 +97,8 @@ export function WelcomePage() {
       <footer className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line pt-4 text-xs text-muted">
         <span>ShiftEX Market הוא כלי תיאום. העברת משמרת רשמית מתבצעת מול רכז השיבוץ לפי נהלי העבודה.</span>
         <Link to="/privacy" className="underline underline-offset-2 hover:text-ink">פרטיות</Link>
+        <Link to="/accessibility" className="underline underline-offset-2 hover:text-ink">הצהרת נגישות</Link>
+        <Link to="/contact" className="underline underline-offset-2 hover:text-ink">יצירת קשר</Link>
       </footer>
     </PublicShell>
   );

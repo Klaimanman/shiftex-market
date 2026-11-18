@@ -81,7 +81,7 @@ function ProfileForm() {
         <div className="mb-6 flex items-center gap-4">
           <Avatar name={me.full_name} src={me.avatar_url} size={56} />
           <div className="flex flex-wrap gap-2">
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" className="sr-only" id="avatar-input" onChange={(e) => onFile(e.target.files?.[0])} />
+            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic" className="sr-only" id="avatar-input" aria-label="העלאת תמונת פרופיל" tabIndex={-1} onChange={(e) => onFile(e.target.files?.[0])} />
             <Button variant="secondary" size="sm" loading={avatarBusy} icon={<ImageUp className="size-4" aria-hidden="true" />} onClick={() => fileRef.current?.click()}>
               החלפת תמונה
             </Button>

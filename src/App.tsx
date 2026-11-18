@@ -9,6 +9,8 @@ import { PublicShell } from './components/AppShell';
 import { WelcomePage } from './pages/Welcome';
 import { AuthCallbackPage } from './pages/AuthCallback';
 import { PrivacyPage } from './pages/Privacy';
+import { ContactPage } from './pages/Contact';
+import { AccessibilityPage } from './pages/Accessibility';
 import { ConfigMissingPage } from './pages/ConfigMissing';
 import { OnboardingPage } from './pages/Onboarding';
 import { PendingPage } from './pages/Pending';
@@ -33,6 +35,8 @@ export function App() {
   if (!isConfigured) return <ConfigMissingPage />;
   if (pathname === '/auth/callback') return <AuthCallbackPage />;
   if (pathname === '/privacy') return <PrivacyPage />;
+  if (pathname === '/contact') return <ContactPage />;
+  if (pathname === '/accessibility') return <AccessibilityPage />;
   return (
     <ErrorBoundary>
       <Gate />

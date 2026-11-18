@@ -14,7 +14,7 @@ export function LogoMark({ size = 28, className }: { size?: number; className?: 
 /** Wordmark — always LTR. */
 export function Logo({ className, withMarket = true, size = 'md' }: { className?: string; withMarket?: boolean; size?: 'md' | 'lg' }) {
   return (
-    <span dir="ltr" className={cn('inline-flex items-center gap-2.5', className)} aria-label="ShiftEX Market">
+    <span dir="ltr" role="img" className={cn('inline-flex items-center gap-2.5', className)} aria-label="ShiftEX Market">
       <LogoMark size={size === 'lg' ? 36 : 28} />
       <span className="flex items-baseline gap-1.5" aria-hidden="true">
         <span className={cn('font-semibold tracking-tight text-ink', size === 'lg' ? 'text-xl' : 'text-md')}>

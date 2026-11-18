@@ -56,8 +56,21 @@ export function Segmented<T extends string>({
   className?: string;
   size?: 'sm' | 'md';
 }) {
+  // WAI-ARIA radio group: one tab stop; arrow keys move & select (RTL-aware).
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const keys: Record<string, number> = { ArrowLeft: 1, ArrowDown: 1, ArrowRight: -1, ArrowUp: -1 };
+    if (!(e.key in keys) && e.key !== 'Home' && e.key !== 'End') return;
+    e.preventDefault();
+    const i = options.findIndex((o) => o.value === value);
+    const n = options.length;
+    const next = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + keys[e.key] + n) % n;
+    onChange(options[next].value);
+    const buttons = e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+    buttons[next]?.focus();
+  };
+
   return (
-    <div role="radiogroup" aria-label={label} className={cn('grid gap-1 rounded-lg border border-line bg-sunken p-1', className)}
+    <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown} className={cn('grid gap-1 rounded-lg border border-line bg-sunken p-1', className)}
       style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
       {options.map((o) => {
         const active = o.value === value;
@@ -67,6 +80,7 @@ export function Segmented<T extends string>({
             type="button"
             role="radio"
             aria-checked={active}
+            tabIndex={active ? 0 : -1}
             onClick={() => onChange(o.value)}
             className={cn(
               'flex flex-col items-center justify-center rounded-md px-2 font-medium transition-[background-color,color,box-shadow] duration-150',

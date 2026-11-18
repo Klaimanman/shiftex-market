@@ -22,7 +22,7 @@ export function WeekStrip({
   periods: ShiftPeriod[];
 }) {
   return (
-    <div role="tablist" aria-label="ימי השבוע" className="grid grid-cols-7 gap-1 sm:gap-1.5">
+    <div role="group" aria-label="ימי השבוע" className="grid grid-cols-7 gap-1 sm:gap-1.5">
       {days.map((d) => {
         const isSel = d === selected;
         const isToday = d === today;
@@ -33,8 +33,8 @@ export function WeekStrip({
           <button
             key={d}
             type="button"
-            role="tab"
-            aria-selected={isSel}
+            aria-pressed={isSel}
+            aria-current={isToday ? 'date' : undefined}
             aria-label={`יום ${WEEKDAYS_HE[dayOfWeek(d)]} ${dayNumber(d)} ב${MONTHS_HE[month - 1]}${isToday ? ', היום' : ''}${c ? `, ${c.total} מודעות` : ''}`}
             onClick={() => onSelect(d)}
             className={cn(
@@ -44,7 +44,7 @@ export function WeekStrip({
                 : isToday
                   ? 'border-accent bg-surface text-ink'
                   : 'border-line bg-surface text-ink hover:border-line-strong',
-              isPast && !isSel && 'opacity-55',
+              isPast && !isSel && 'bg-surface-2 text-muted',
             )}
           >
             <span className={cn('text-2xs font-medium', isSel ? 'text-bg/75' : 'text-muted')}>{WEEKDAYS_SHORT_HE[dayOfWeek(d)]}</span>

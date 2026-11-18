@@ -192,15 +192,14 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
           </Field>
 
           <FieldGroup legend="משמרת" error={errors.periodId}>
-            <div role="radiogroup" aria-label="משמרת" className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            <div role="group" aria-label="משמרת" className="grid grid-cols-2 gap-2 sm:grid-cols-5">
               {r!.periods.map((p) => {
                 const on = v.periodId === p.id;
                 return (
                   <button
                     key={p.id}
                     type="button"
-                    role="radio"
-                    aria-checked={on}
+                    aria-pressed={on}
                     onClick={() => set('periodId', p.id)}
                     className={`flex min-h-14 flex-col items-start justify-center rounded-md border px-3 py-2 text-start transition-colors ${
                       on ? 'border-accent bg-accent-soft' : 'border-line-strong bg-surface hover:border-ink-2/40'
@@ -210,14 +209,14 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
                       <PeriodDot code={p.code} />
                       {r!.periodLabel(p.id)}
                     </span>
-                    {r!.periodTimes(p.id) && <bdi dir="ltr" className="tabular font-mono text-xs text-muted">{r!.periodTimes(p.id)}</bdi>}
+                    {r!.periodTimes(p.id) && <bdi dir="ltr" className={`tabular font-mono text-xs ${on ? 'text-ink-2' : 'text-muted'}`}>{r!.periodTimes(p.id)}</bdi>}
                   </button>
                 );
               })}
               <button
                 type="button"
-                role="radio"
-                aria-checked={special}
+
+                aria-pressed={special}
                 onClick={() => set('periodId', SPECIAL)}
                 className={`col-span-2 flex min-h-14 flex-col items-start justify-center rounded-md border border-dashed px-3 py-2 text-start transition-colors sm:col-span-5 ${
                   special ? 'border-accent bg-accent-soft' : 'border-line-strong bg-surface hover:border-ink-2/40'
