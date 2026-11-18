@@ -3,6 +3,7 @@ import { PageHeader, Panel } from '@/components/PageHeader';
 import { PeriodDot } from '@/components/listing-bits';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/field';
+import { TimeInput } from '@/components/ui/time-input';
 import { ErrorState, ListSkeleton, Notice } from '@/components/ui/feedback';
 import { useToast } from '@/components/ui/toast';
 import { usePeriods } from '@/data/reference';
@@ -67,10 +68,10 @@ function PeriodCard({ period: p }: { period: ShiftPeriod }) {
       </Field>
       <div className="grid grid-cols-2 gap-3">
         <Field label="התחלה">
-          <Input type="time" value={start} onChange={(e) => setStart(e.target.value)} className="tabular" />
+          <TimeInput value={start} onChange={setStart} />
         </Field>
         <Field label="סיום">
-          <Input type="time" value={end} onChange={(e) => setEnd(e.target.value)} className="tabular" />
+          <TimeInput value={end} onChange={setEnd} />
         </Field>
       </div>
       <Button size="sm" disabled={!dirty} loading={save.isPending} onClick={submit}>

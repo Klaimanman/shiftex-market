@@ -10,6 +10,7 @@ const MESSAGES: Record<string, string> = {
   date_out_of_range: 'אפשר לבחור תאריך מהיום ועד 60 יום קדימה.',
   shift_started: 'המשמרת כבר התחילה, אי אפשר לפרסם אותה.',
   invalid_listing: 'חסרים פרטים במודעה.',
+  special_shift_incomplete: 'למשמרת מיוחדת יש לתת שם ושעות התחלה וסיום.',
   invalid_period: 'המשמרת שנבחרה לא קיימת.',
   invalid_position: 'העמדה שנבחרה לא קיימת או לא פעילה.',
   want_dates_required: 'יש לבחור לפחות תאריך אחד.',

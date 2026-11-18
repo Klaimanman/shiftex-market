@@ -142,7 +142,18 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
         <dl className="divide-y divide-line">
           {l.type !== 'seek' && (
             <>
-              <Row label="משמרת">{r.periodLabel(l.period_id)}{l.custom_title && <span className="text-muted"> · {l.custom_title}</span>}</Row>
+              <Row label="משמרת">
+                {l.period_id ? (
+                  <>
+                    {r.periodLabel(l.period_id)}
+                    {l.custom_title && <span className="text-muted"> · {l.custom_title}</span>}
+                  </>
+                ) : (
+                  <>
+                    {l.custom_title} <span className="text-muted">· משמרת מיוחדת</span>
+                  </>
+                )}
+              </Row>
               <Row label="שעות">{times ? <bdi dir="ltr" className="tabular font-mono text-sm">{times}</bdi> : <span className="text-muted">לא הוגדרו</span>}</Row>
               <Row label="עמדה">
                 <span className="inline-flex items-center gap-1.5">

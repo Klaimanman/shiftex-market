@@ -40,6 +40,7 @@ export const PERIOD_FALLBACK: Record<PeriodCode, string> = {
   afternoon: 'צהריים',
   night: 'לילה',
   oncall: 'כונן',
+  port: 'נמל',
 };
 
 export const OPTION_LABEL = 'אופציה ל־12 שעות';

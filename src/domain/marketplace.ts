@@ -36,6 +36,8 @@ export interface DayGroups {
   byPeriod: Record<string, Listing[]>;
   /** seek listings open to any period */
   flexible: Listing[];
+  /** non-standard shifts with their own name & hours */
+  special: Listing[];
   total: number;
 }
 
@@ -45,11 +47,15 @@ const byCreated = (a: Listing, b: Listing) => a.created_at.localeCompare(b.creat
 export function groupDay(listings: Listing[], date: ISODate, periods: ShiftPeriod[]): DayGroups {
   const byPeriod: Record<string, Listing[]> = Object.fromEntries(periods.map((p) => [p.id, [] as Listing[]]));
   const flexible: Listing[] = [];
+  const special: Listing[] = [];
   const seen = new Set<string>();
 
   for (const l of listings) {
     if (l.shift_date === date && l.period_id) {
       (byPeriod[l.period_id] ??= []).push(l);
+      seen.add(l.id);
+    } else if (l.shift_date === date && !l.period_id) {
+      special.push(l);
       seen.add(l.id);
     } else if (l.type === 'seek' && l.want_dates.includes(date)) {
       seen.add(l.id);
@@ -59,7 +65,8 @@ export function groupDay(listings: Listing[], date: ISODate, periods: ShiftPerio
   }
   for (const k of Object.keys(byPeriod)) byPeriod[k].sort(byCreated);
   flexible.sort(byCreated);
-  return { byPeriod, flexible, total: seen.size };
+  special.sort(byCreated);
+  return { byPeriod, flexible, special, total: seen.size };
 }
 
 /** Per-day, per-period counts for the week strip. */

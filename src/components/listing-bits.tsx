@@ -11,6 +11,7 @@ export const PERIOD_BG: Record<PeriodCode, string> = {
   afternoon: 'bg-p-afternoon',
   night: 'bg-p-night',
   oncall: 'bg-p-oncall',
+  port: 'bg-p-port',
 };
 
 export const PERIOD_TEXT: Record<PeriodCode, string> = {
@@ -18,6 +19,7 @@ export const PERIOD_TEXT: Record<PeriodCode, string> = {
   afternoon: 'text-p-afternoon',
   night: 'text-p-night',
   oncall: 'text-p-oncall',
+  port: 'text-p-port',
 };
 
 export function PeriodDot({ code, className }: { code: PeriodCode | undefined; className?: string }) {

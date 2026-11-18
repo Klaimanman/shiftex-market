@@ -35,10 +35,12 @@ export function isOpen(l: Pick<Listing, 'status' | 'expires_at'>, now: Date = ne
 
 /** How well a concrete shift satisfies a set of wants. */
 export function giveFitsWants(give: Give, want: Want): MatchResult {
-  if (!give.shift_date || !give.period_id || !give.position_id) return NONE;
+  if (!give.shift_date || !give.position_id) return NONE;
   if (!want.want_dates.includes(give.shift_date)) return NONE;
 
-  const periodOk = want.want_period_ids.length === 0 || want.want_period_ids.includes(give.period_id);
+  // Special shifts (no regular period) only fit wants that accept any period.
+  const periodOk =
+    want.want_period_ids.length === 0 || (!!give.period_id && want.want_period_ids.includes(give.period_id));
   const positionOk = want.want_position_ids.includes(give.position_id);
   const optionOk = want.want_option_ok || !give.has_option;
 

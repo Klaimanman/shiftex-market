@@ -10,6 +10,7 @@ const ME = '22222222-2222-4222-8222-222222222222';
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 
 const periods = [
+  { id: id(100), org_id: ORG, code: 'port', label: 'נמל', start_time: '06:00:00', end_time: '14:00:00', sort_order: 0 },
   { id: id(101), org_id: ORG, code: 'morning', label: 'בוקר', start_time: '07:00:00', end_time: '15:00:00', sort_order: 1 },
   { id: id(102), org_id: ORG, code: 'afternoon', label: 'צהריים', start_time: '15:00:00', end_time: '23:00:00', sort_order: 2 },
   { id: id(103), org_id: ORG, code: 'night', label: 'לילה', start_time: '23:00:00', end_time: '07:00:00', sort_order: 3 },

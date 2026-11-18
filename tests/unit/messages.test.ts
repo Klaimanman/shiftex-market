@@ -94,6 +94,9 @@ describe('form validation', () => {
     expect(listingFormSchema.safeParse({ ...ok, periodId: '' }).success).toBe(false);
     expect(listingFormSchema.safeParse({ ...ok, isCustom: true }).success).toBe(false);
     expect(listingFormSchema.safeParse({ ...ok, isCustom: true, customTitle: 'משמרת אירוע' }).success).toBe(true);
+    // special (non-standard) shift: name + both hours required
+    expect(listingFormSchema.safeParse({ ...ok, periodId: 'special', customTitle: 'תגבור' }).success).toBe(false);
+    expect(listingFormSchema.safeParse({ ...ok, periodId: 'special', customTitle: 'תגבור', customStart: '16:00', customEnd: '22:00' }).success).toBe(true);
     expect(listingFormSchema.safeParse({ ...ok, type: 'seek' }).success).toBe(false); // no wanted dates
     expect(listingFormSchema.safeParse({ ...ok, type: 'seek', wantDates: ['2026-11-20'] }).success).toBe(true);
   });

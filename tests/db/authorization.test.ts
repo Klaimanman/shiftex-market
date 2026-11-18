@@ -125,7 +125,7 @@ describe('onboarding & invitations', () => {
 
   it('admin approves; access is granted immediately', async () => {
     await db.as(ADMIN, `select public.admin_set_member_status($1, 'active')`, [BASIC]);
-    expect((await db.as(BASIC, `select * from public.shift_periods`)).length).toBe(4);
+    expect((await db.as(BASIC, `select * from public.shift_periods`)).length).toBe(5);
   });
 
   it('self-selected badges are stored and become qualifications after approval', async () => {
@@ -251,6 +251,23 @@ describe('listings: qualification, ownership, validation', () => {
     const [l] = await db.system<any>(`select status from public.shift_listings where id = $1`, [id]);
     expect(l.status).toBe('expired');
     expect(await db.asError(BASIC, `update public.shift_listings set status = 'in_coordination' where id = $1`, [id])).toMatch(/listing_closed/);
+  });
+
+  it('special shift without a regular period requires name and hours, and starts at its own time', async () => {
+    const date = future(19);
+    expect(await db.asError(BASIC, `insert into public.shift_listings (type, shift_date, position_id, org_id, owner_id, starts_at, expires_at)
+      values ('offer', $1, $2, $3, auth.uid(), now(), now())`, [date, posOpen, org])).toMatch(/special_shift_incomplete/);
+    const [row] = await db.as<any>(
+      BASIC,
+      `insert into public.shift_listings (type, shift_date, position_id, custom_title, custom_start, custom_end, note, org_id, owner_id, starts_at, expires_at)
+       values ('offer', $1, $2, 'משמרת אירוע', '16:30', '22:00', 'כנס במתחם', $3, auth.uid(), now(), now()) returning *`,
+      [date, posOpen, org],
+    );
+    expect(row.period_id).toBeNull();
+    const local = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jerusalem', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(
+      new Date(row.starts_at),
+    );
+    expect(local).toBe('16:30');
   });
 
   it('night shift start is computed in Asia/Jerusalem', async () => {

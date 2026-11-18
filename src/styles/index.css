@@ -29,6 +29,7 @@
   --p-afternoon: #b5532f;
   --p-night: #3e4c8a;
   --p-oncall: #5c6672;
+  --p-port: #2f7f9a;
   --shadow-pop: 0 1px 2px rgb(27 26 24 / 0.06), 0 8px 24px -8px rgb(27 26 24 / 0.18);
   --overlay: rgb(27 26 24 / 0.38);
 }
@@ -56,6 +57,7 @@
   --p-afternoon: #e07d55;
   --p-night: #8c9be0;
   --p-oncall: #9aa4b0;
+  --p-port: #5fb4cf;
   --shadow-pop: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 12px 32px -12px rgb(0 0 0 / 0.7);
   --overlay: rgb(0 0 0 / 0.6);
 }
@@ -85,6 +87,7 @@
   --color-p-afternoon: var(--p-afternoon);
   --color-p-night: var(--p-night);
   --color-p-oncall: var(--p-oncall);
+  --color-p-port: var(--p-port);
   --color-overlay: var(--overlay);
 
   --radius-sm: 4px;

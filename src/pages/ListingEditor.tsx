@@ -6,13 +6,14 @@ import { PeriodDot } from '@/components/listing-bits';
 import { Button } from '@/components/ui/button';
 import { Chip, Segmented, Switch } from '@/components/ui/controls';
 import { Field, FieldGroup, Input, Textarea } from '@/components/ui/field';
+import { TimeInput } from '@/components/ui/time-input';
 import { ErrorState, ListSkeleton, Notice } from '@/components/ui/feedback';
 import { useToast } from '@/components/ui/toast';
 import { useMe } from '@/data/session';
 import { useReference } from '@/data/reference';
 import { useCreateListing, useListing, useUpdateListing, type ListingInput } from '@/data/listings';
 import { addDays, formatTime, isISODate, todayIL } from '@/domain/dates';
-import { listingFormSchema, type ListingFormValues } from '@/domain/validation';
+import { listingFormSchema, SPECIAL_PERIOD as SPECIAL, type ListingFormValues } from '@/domain/validation';
 import { OPTION_LABEL, TYPE_HINT, TYPE_TITLE } from '@/domain/labels';
 import type { Listing, ListingType } from '@/domain/types';
 import { errorMessage } from '@/lib/errors';
@@ -28,7 +29,7 @@ function fromListing(l: Listing): ListingFormValues {
   return {
     type: l.type,
     shiftDate: l.shift_date ?? '',
-    periodId: l.period_id ?? '',
+    periodId: l.period_id ?? (l.type !== 'seek' && l.custom_title ? SPECIAL : ''),
     positionId: l.position_id ?? '',
     hasOption: l.has_option,
     isCustom: !!l.custom_title,
@@ -46,15 +47,17 @@ function fromListing(l: Listing): ListingFormValues {
 function toInput(v: ListingFormValues): ListingInput {
   const give = v.type !== 'seek';
   const want = v.type !== 'offer';
+  const special = v.periodId === SPECIAL;
+  const custom = give && (v.isCustom || special);
   return {
     type: v.type,
     shift_date: give ? v.shiftDate : null,
-    period_id: give ? v.periodId : null,
+    period_id: give && !special ? v.periodId : null,
     position_id: give ? v.positionId : null,
     has_option: give ? v.hasOption : false,
-    custom_title: give && v.isCustom ? v.customTitle.trim() : null,
-    custom_start: give && v.isCustom && v.customStart ? v.customStart : null,
-    custom_end: give && v.isCustom && v.customEnd ? v.customEnd : null,
+    custom_title: custom ? v.customTitle.trim() : null,
+    custom_start: custom && v.customStart ? v.customStart : null,
+    custom_end: custom && v.customEnd ? v.customEnd : null,
     want_dates: want ? v.wantDates : [],
     want_period_ids: want ? v.wantPeriodIds : [],
     want_position_ids: want ? v.wantPositionIds : [],
@@ -112,12 +115,21 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
 
   const activePositions = useMemo(() => r!.positions.filter((p) => p.is_active), [r]);
   const qualifiedPositions = activePositions.filter((p) => me.qualified.has(p.id));
+  // "נמל" is the default shift for new listings.
+  useEffect(() => {
+    if (listing || v.periodId) return;
+    const port = r!.periods.find((p) => p.code === 'port');
+    if (port) set('periodId', port.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [r]);
+
   useEffect(() => {
     if (!v.positionId && qualifiedPositions.length === 1) set('positionId', qualifiedPositions[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qualifiedPositions.length]);
 
   const give = v.type !== 'seek';
+  const special = v.periodId === SPECIAL;
   const want = v.type !== 'offer';
   const saving = create.isPending || update.isPending;
 
@@ -180,7 +192,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
           </Field>
 
           <FieldGroup legend="משמרת" error={errors.periodId}>
-            <div role="radiogroup" aria-label="משמרת" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div role="radiogroup" aria-label="משמרת" className="grid grid-cols-2 gap-2 sm:grid-cols-5">
               {r!.periods.map((p) => {
                 const on = v.periodId === p.id;
                 return (
@@ -202,8 +214,37 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
                   </button>
                 );
               })}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={special}
+                onClick={() => set('periodId', SPECIAL)}
+                className={`col-span-2 flex min-h-14 flex-col items-start justify-center rounded-md border border-dashed px-3 py-2 text-start transition-colors sm:col-span-5 ${
+                  special ? 'border-accent bg-accent-soft' : 'border-line-strong bg-surface hover:border-ink-2/40'
+                }`}
+              >
+                <span className="font-medium">משמרת מיוחדת</span>
+                <span className="text-xs text-muted">משמרת שאינה מהקבועות — עם שם, פירוט ושעות משלה</span>
+              </button>
             </div>
           </FieldGroup>
+
+          {special && (
+            <div className="space-y-4 rounded-md bg-surface-2 p-3">
+              <Field label="שם המשמרת" error={errors.customTitle} aside={<span className="tabular text-xs text-muted">{v.customTitle.length}/40</span>}>
+                <Input value={v.customTitle} onChange={(e) => set('customTitle', e.target.value)} maxLength={40} placeholder="למשל: משמרת אירוע, תגבור, ליווי" />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="שעת התחלה" error={errors.customStart}>
+                  <TimeInput value={v.customStart} onChange={(x) => set('customStart', x)} />
+                </Field>
+                <Field label="שעת סיום" error={errors.customEnd}>
+                  <TimeInput value={v.customEnd} onChange={(x) => set('customEnd', x)} />
+                </Field>
+              </div>
+              <p className="text-xs text-muted">את הפירוט (מיקום, דרישות, מה צריך לדעת) כותבים בשדה ״פירוט המשמרת״ למטה.</p>
+            </div>
+          )}
 
           <FieldGroup legend="עמדה" error={errors.positionId} hint={activePositions.some((p) => !me.qualified.has(p.id)) ? 'עמדות נעולות דורשות תג שאין בפרופיל שלך.' : undefined}>
             <div className="flex flex-wrap gap-2">
@@ -217,20 +258,22 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
 
           <div className="divide-y divide-line rounded-md border border-line px-3">
             <Switch checked={v.hasOption} onChange={(x) => set('hasOption', x)} label={OPTION_LABEL} description="המשמרת יכולה להתארך ל־12 שעות. לא מניחים שהאופציה תופעל." />
-            <Switch checked={v.isCustom} onChange={(x) => set('isCustom', x)} label="משמרת שאינה רגילה" description="למשל משמרת אירוע או שעות שונות — אפשר לתת לה שם ושעות." />
+            {!special && (
+              <Switch checked={v.isCustom} onChange={(x) => set('isCustom', x)} label="שם או שעות שונים" description="משמרת קבועה עם שם אחר או שעות שונות מהרגיל." />
+            )}
           </div>
 
-          {v.isCustom && (
+          {v.isCustom && !special && (
             <div className="space-y-4 rounded-md bg-surface-2 p-3">
               <Field label="שם המשמרת" error={errors.customTitle} aside={<span className="tabular text-xs text-muted">{v.customTitle.length}/40</span>}>
                 <Input value={v.customTitle} onChange={(e) => set('customTitle', e.target.value)} maxLength={40} placeholder="למשל: משמרת אירוע" />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="שעת התחלה" optional error={errors.customStart}>
-                  <Input type="time" value={v.customStart} onChange={(e) => set('customStart', e.target.value)} className="tabular" />
+                  <TimeInput value={v.customStart} onChange={(x) => set('customStart', x)} />
                 </Field>
                 <Field label="שעת סיום" optional error={errors.customEnd}>
-                  <Input type="time" value={v.customEnd} onChange={(e) => set('customEnd', e.target.value)} className="tabular" />
+                  <TimeInput value={v.customEnd} onChange={(x) => set('customEnd', x)} />
                 </Field>
               </div>
             </div>
@@ -287,7 +330,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
       )}
 
       <Panel className="mt-4 p-4 sm:p-5">
-        <Field label="הערות" optional error={errors.note} aside={<span className="tabular text-xs text-muted">{v.note.length}/280</span>}>
+        <Field label={special && give ? 'פירוט המשמרת' : 'הערות'} optional error={errors.note} aside={<span className="tabular text-xs text-muted">{v.note.length}/280</span>}>
           <Textarea value={v.note} onChange={(e) => set('note', e.target.value)} maxLength={280} placeholder="פרטים שחשוב לדעת" />
         </Field>
       </Panel>

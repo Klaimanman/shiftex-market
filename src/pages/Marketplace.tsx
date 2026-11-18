@@ -174,6 +174,19 @@ export function MarketplacePage() {
             </div>
           );
         })}
+        {g.special.length > 0 && (
+          <div>
+            <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink-2">
+              <span className="inline-block size-2 rounded-full border border-ink-2" aria-hidden="true" />
+              משמרות מיוחדות <span className="tabular text-xs font-normal text-muted">· {g.special.length}</span>
+            </h3>
+            <div className="grid gap-2 md:grid-cols-2">
+              {g.special.map((l) => (
+                <ListingCard key={l.id} listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} />
+              ))}
+            </div>
+          </div>
+        )}
         {g.flexible.length > 0 && (
           <div>
             <h3 className="mb-2 text-sm font-semibold text-ink-2">

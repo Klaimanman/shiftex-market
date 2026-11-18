@@ -2,7 +2,7 @@ import type { ISODate } from './dates';
 
 export type ListingType = 'offer' | 'seek' | 'exchange';
 export type ListingStatus = 'active' | 'in_coordination' | 'closed_taken' | 'closed_cancelled' | 'expired' | 'removed_by_admin';
-export type PeriodCode = 'morning' | 'afternoon' | 'night' | 'oncall';
+export type PeriodCode = 'port' | 'morning' | 'afternoon' | 'night' | 'oncall';
 export type MemberRole = 'employee' | 'admin';
 export type MemberStatus = 'pending' | 'active' | 'suspended' | 'banned' | 'rejected';
 export type InterestStatus = 'open' | 'withdrawn' | 'declined' | 'accepted';

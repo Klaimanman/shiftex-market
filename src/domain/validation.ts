@@ -14,6 +14,9 @@ export const profileSchema = z.object({
   phone: z.string().refine((v) => normalizeILMobile(v) !== null, 'מספר נייד ישראלי לא תקין. לדוגמה: 050-1234567'),
 });
 
+/** Form value for a non-standard shift with its own name & hours (stored as period_id = null). */
+export const SPECIAL_PERIOD = 'special';
+
 const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'שעה לא תקינה');
 
 export const listingFormSchema = z
@@ -38,10 +41,13 @@ export const listingFormSchema = z
       if (!isISODate(v.shiftDate)) ctx.addIssue({ code: 'custom', path: ['shiftDate'], message: 'יש לבחור תאריך' });
       if (!v.periodId) ctx.addIssue({ code: 'custom', path: ['periodId'], message: 'יש לבחור משמרת' });
       if (!v.positionId) ctx.addIssue({ code: 'custom', path: ['positionId'], message: 'יש לבחור עמדה' });
-      if (v.isCustom) {
+      const special = v.periodId === SPECIAL_PERIOD;
+      if (v.isCustom || special) {
         if (v.customTitle.trim().length < 2) ctx.addIssue({ code: 'custom', path: ['customTitle'], message: 'יש לתת שם למשמרת' });
         const hasStart = v.customStart !== '';
         const hasEnd = v.customEnd !== '';
+        if (special && !hasStart) ctx.addIssue({ code: 'custom', path: ['customStart'], message: 'יש לבחור שעת התחלה' });
+        if (special && !hasEnd) ctx.addIssue({ code: 'custom', path: ['customEnd'], message: 'יש לבחור שעת סיום' });
         if (hasStart !== hasEnd) ctx.addIssue({ code: 'custom', path: ['customEnd'], message: 'יש למלא גם שעת התחלה וגם שעת סיום' });
         if (hasStart && !time.safeParse(v.customStart).success) ctx.addIssue({ code: 'custom', path: ['customStart'], message: 'שעה לא תקינה' });
         if (hasEnd && !time.safeParse(v.customEnd).success) ctx.addIssue({ code: 'custom', path: ['customEnd'], message: 'שעה לא תקינה' });
