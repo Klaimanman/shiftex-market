@@ -10,6 +10,7 @@ import { useUnreadCount } from '@/data/notifications';
 import { useRealtimeSync } from '@/data/realtime';
 import { Logo } from './Logo';
 import { Avatar } from './ui/controls';
+import { AccessibilityMenu } from './AccessibilityMenu';
 
 const NAV = [
   { to: '/', label: 'בית', icon: Home, end: true },
@@ -79,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'relative flex h-10 items-center gap-3 rounded-md px-3 text-[14px] font-medium transition-colors',
+                  'relative flex h-10 items-center gap-3 rounded-md px-3 text-[0.875rem] font-medium transition-colors',
                   isActive ? 'bg-surface text-ink ring-1 ring-line' : 'text-ink-2 hover:bg-sunken hover:text-ink',
                 )
               }
@@ -96,7 +97,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               to="/admin"
               className={({ isActive }) =>
                 cn(
-                  'mt-3 flex h-10 items-center gap-3 rounded-md px-3 text-[14px] font-medium',
+                  'mt-3 flex h-10 items-center gap-3 rounded-md px-3 text-[0.875rem] font-medium',
                   isActive || pathname.startsWith('/admin') ? 'bg-surface text-ink ring-1 ring-line' : 'text-ink-2 hover:bg-sunken hover:text-ink',
                 )
               }
@@ -106,7 +107,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </NavLink>
           )}
         </nav>
-        <div className="mt-auto flex items-center gap-1 border-t border-line pt-4">
+        <Link to="/legal" className="mt-auto px-2 pb-3 text-2xs leading-relaxed text-muted hover:text-ink">
+          פותח באופן עצמאי · ללא שימוש מסחרי · הצהרה ופרטיות
+        </Link>
+        <div className="flex items-center gap-1 border-t border-line pt-4">
           <Link to="/profile" className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md p-1.5 hover:bg-sunken">
             <Avatar name={me.full_name} src={me.avatar_url} size={32} />
             <span className="min-w-0">
@@ -165,6 +169,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </nav>
       </div>
+      <AccessibilityMenu withBottomNav />
     </div>
   );
 }
@@ -199,6 +204,11 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <main id="main" className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-10 sm:px-6">
         {children}
       </main>
+      <footer className="mx-auto w-full max-w-5xl px-4 pb-6 text-center text-2xs text-muted sm:px-6">
+        פותח באופן עצמאי · ללא שימוש מסחרי נכון ל-18/11/2026 ·{' '}
+        <Link to="/legal" className="underline underline-offset-2 hover:text-ink">הצהרה, פרטיות ואבטחה</Link>
+      </footer>
+      <AccessibilityMenu withBottomNav={false} />
     </div>
   );
 }

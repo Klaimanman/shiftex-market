@@ -166,11 +166,13 @@ export function MarketplacePage() {
                 {times && <bdi dir="ltr" className="tabular font-mono text-xs font-normal text-muted">{times}</bdi>}
                 <span className="tabular text-xs font-normal text-muted">· {items.length}</span>
               </h3>
-              <div className="grid gap-2 md:grid-cols-2">
-                {items.map((l) => (
-                  <ListingCard key={`${p.id}-${l.id}`} listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} />
+              <ol className="max-w-3xl space-y-2">
+                {items.map((l, i) => (
+                  <li key={`${p.id}-${l.id}`}>
+                    <ListingCard listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} order={i + 1} />
+                  </li>
                 ))}
-              </div>
+              </ol>
             </div>
           );
         })}
@@ -180,11 +182,13 @@ export function MarketplacePage() {
               <span className="inline-block size-2 rounded-full border border-ink-2" aria-hidden="true" />
               משמרות מיוחדות <span className="tabular text-xs font-normal text-muted">· {g.special.length}</span>
             </h3>
-            <div className="grid gap-2 md:grid-cols-2">
-              {g.special.map((l) => (
-                <ListingCard key={l.id} listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} />
+            <ol className="max-w-3xl space-y-2">
+              {g.special.map((l, i) => (
+                <li key={l.id}>
+                  <ListingCard listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} order={i + 1} />
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
         )}
         {g.flexible.length > 0 && (
@@ -192,11 +196,13 @@ export function MarketplacePage() {
             <h3 className="mb-2 text-sm font-semibold text-ink-2">
               גמיש: כל משמרת <span className="tabular text-xs font-normal text-muted">· {g.flexible.length}</span>
             </h3>
-            <div className="grid gap-2 md:grid-cols-2">
-              {g.flexible.map((l) => (
-                <ListingCard key={l.id} listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} />
+            <ol className="max-w-3xl space-y-2">
+              {g.flexible.map((l, i) => (
+                <li key={l.id}>
+                  <ListingCard listing={l} reference={r!} qualified={me.qualified} isMine={l.owner_id === me.user_id} order={i + 1} />
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
         )}
       </div>

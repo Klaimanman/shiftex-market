@@ -123,11 +123,13 @@ export function ListingSectionPage({ kind }: { kind: Kind }) {
                 {formatLong(g.date)}
                 {g.date === today && <span className="ms-2 font-normal text-accent">היום</span>}
               </h2>
-              <div className="grid gap-2 md:grid-cols-2">
-                {g.items.map((l) => (
-                  <ListingCard key={`${g.date}-${l.id}`} listing={l} reference={r} qualified={me.qualified} isMine={l.owner_id === me.user_id} />
+              <ol className="max-w-3xl space-y-2">
+                {g.items.map((l, i) => (
+                  <li key={`${g.date}-${l.id}`}>
+                    <ListingCard listing={l} reference={r} qualified={me.qualified} isMine={l.owner_id === me.user_id} order={i + 1} />
+                  </li>
                 ))}
-              </div>
+              </ol>
             </section>
           ))}
         </div>

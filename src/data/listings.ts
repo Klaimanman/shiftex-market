@@ -119,6 +119,18 @@ export function useUpdateListing() {
   });
 }
 
+/** Owner permanently deletes their own listing (e.g. after the shift was taken). */
+export function useDeleteListing() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const rows = unwrap(await supabase.from('shift_listings').delete().eq('id', id).select('id')) as { id: string }[];
+      if (rows.length === 0) throw new AppError('forbidden');
+    },
+    onSuccess: () => invalidateListings(qc),
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Interests & contact
 // ---------------------------------------------------------------------------

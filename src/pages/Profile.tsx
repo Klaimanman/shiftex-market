@@ -81,6 +81,9 @@ export function ProfilePage() {
           <Link to="/privacy" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
             פרטיות ושימוש במידע <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
           </Link>
+          <Link to="/legal" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
+            הצהרה, פרטיות ואבטחה <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
+          </Link>
           <Link to="/accessibility" className="flex items-center justify-between px-4 py-3.5 hover:bg-surface-2">
             הצהרת נגישות <ChevronLeft className="size-4 text-muted" aria-hidden="true" />
           </Link>

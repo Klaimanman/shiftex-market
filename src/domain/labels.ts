@@ -39,7 +39,9 @@ export const PERIOD_FALLBACK: Record<PeriodCode, string> = {
   morning: 'בוקר',
   afternoon: 'צהריים',
   night: 'לילה',
-  oncall: 'כונן',
+  oncall: 'כונן בוקר',
+  oncall_afternoon: 'כונן צהריים',
+  oncall_night: 'כונן לילה',
   port: 'נמל',
 };
 

@@ -92,7 +92,7 @@ export function NotificationsPage() {
                 <span className={cn('mt-2 size-2 shrink-0 rounded-full', n.read_at ? 'bg-transparent' : 'bg-accent')} aria-hidden="true" />
                 {n.actor ? <Avatar name={n.actor.full_name} src={n.actor.avatar_url} size={32} /> : <span className="grid size-8 shrink-0 place-items-center rounded-full bg-sunken text-muted"><Bell className="size-4" aria-hidden="true" /></span>}
                 <div className="min-w-0 flex-1">
-                  <p className={cn('text-[15px] leading-snug', n.read_at ? 'text-ink-2' : 'font-medium text-ink')}>
+                  <p className={cn('text-[0.9375rem] leading-snug', n.read_at ? 'text-ink-2' : 'font-medium text-ink')}>
                     {!n.read_at && <span className="sr-only">חדש: </span>}
                     {d.title}
                   </p>

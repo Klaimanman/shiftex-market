@@ -3,7 +3,7 @@ import { ArrowLeftRight, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { Listing } from '@/domain/types';
 import type { Reference } from '@/data/reference';
-import { formatShort, relativeTimeHe } from '@/domain/dates';
+import { formatDayMonth, formatShort, instantToISODate, instantToLocalTime, relativeTimeHe } from '@/domain/dates';
 import { Avatar } from './ui/controls';
 import { LockedHint, OptionTag, PERIOD_BG, StatusTag, TypeTag, wantedSummary } from './listing-bits';
 
@@ -15,6 +15,7 @@ export function ListingCard({
   isMine = false,
   compact = false,
   badge,
+  order,
 }: {
   listing: Listing;
   reference: Reference;
@@ -23,6 +24,8 @@ export function ListingCard({
   isMine?: boolean;
   compact?: boolean;
   badge?: React.ReactNode;
+  /** FIFO position in its list (1 = published first) */
+  order?: number;
 }) {
   const period = l.period_id ? r.periodById.get(l.period_id) : undefined;
   const locked = !isMine && l.type !== 'seek' && !!l.position_id && !qualified.has(l.position_id);
@@ -43,6 +46,15 @@ export function ListingCard({
         aria-hidden="true"
       />
       <div className="flex items-start gap-3">
+        {order !== undefined && (
+          <span
+            className="tabular grid size-8 shrink-0 place-items-center rounded-full border border-line-strong bg-surface-2 text-sm font-semibold text-ink"
+            title={`מקום ${order} בתור`}
+          >
+            <span className="sr-only">מקום בתור: </span>
+            {order}
+          </span>
+        )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <TypeTag type={l.type} />
@@ -87,7 +99,10 @@ export function ListingCard({
               <span className="flex min-w-0 items-center gap-2 text-sm text-ink-2">
                 <Avatar name={l.owner?.full_name ?? ''} src={l.owner?.avatar_url} size={22} />
                 <span className="truncate">{l.owner?.full_name ?? 'עמית'}</span>
-                <span className="text-muted">· {relativeTimeHe(l.created_at)}</span>
+                <span className="text-muted">
+                  · פורסם <bdi dir="ltr" className="tabular">{formatDayMonth(instantToISODate(l.created_at))} {instantToLocalTime(l.created_at)}</bdi>
+                  <span className="sr-only"> ({relativeTimeHe(l.created_at)})</span>
+                </span>
               </span>
               {locked && <LockedHint />}
             </div>

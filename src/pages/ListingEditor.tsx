@@ -115,16 +115,12 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
 
   const activePositions = useMemo(() => r!.positions.filter((p) => p.is_active), [r]);
   const qualifiedPositions = activePositions.filter((p) => me.qualified.has(p.id));
-  // "נמל" is the default shift for new listings.
+  // "נמל" is the default position for new listings (if the user may take it).
   useEffect(() => {
-    if (listing || v.periodId) return;
-    const port = r!.periods.find((p) => p.code === 'port');
-    if (port) set('periodId', port.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [r]);
-
-  useEffect(() => {
-    if (!v.positionId && qualifiedPositions.length === 1) set('positionId', qualifiedPositions[0].id);
+    if (listing || v.positionId) return;
+    const port = qualifiedPositions.find((p) => p.name.trim() === 'נמל');
+    if (port) set('positionId', port.id);
+    else if (qualifiedPositions.length === 1) set('positionId', qualifiedPositions[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qualifiedPositions.length]);
 

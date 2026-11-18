@@ -11,6 +11,7 @@ import { AuthCallbackPage } from './pages/AuthCallback';
 import { PrivacyPage } from './pages/Privacy';
 import { ContactPage } from './pages/Contact';
 import { AccessibilityPage } from './pages/Accessibility';
+import { LegalPage } from './pages/Legal';
 import { ConfigMissingPage } from './pages/ConfigMissing';
 import { OnboardingPage } from './pages/Onboarding';
 import { PendingPage } from './pages/Pending';
@@ -37,6 +38,7 @@ export function App() {
   if (pathname === '/privacy') return <PrivacyPage />;
   if (pathname === '/contact') return <ContactPage />;
   if (pathname === '/accessibility') return <AccessibilityPage />;
+  if (pathname === '/legal') return <LegalPage />;
   return (
     <ErrorBoundary>
       <Gate />

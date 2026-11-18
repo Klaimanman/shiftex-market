@@ -49,7 +49,7 @@ export function WelcomePage() {
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted" dir="ltr" style={{ textAlign: 'right' }}>
             Your shift. Your choice.
           </p>
-          <h1 className="mt-4 text-2xl font-semibold leading-tight text-ink sm:text-[36px] sm:leading-[1.15]">
+          <h1 className="mt-4 text-2xl font-semibold leading-tight text-ink sm:text-[2.25rem] sm:leading-[1.15]">
             שוק המשמרות של הצוות.
             <br />
             <span className="text-muted">מסודר, הוגן ופרטי.</span>
@@ -111,6 +111,7 @@ export function WelcomePage() {
         <Link to="/privacy" className="underline underline-offset-2 hover:text-ink">פרטיות</Link>
         <Link to="/accessibility" className="underline underline-offset-2 hover:text-ink">הצהרת נגישות</Link>
         <Link to="/contact" className="underline underline-offset-2 hover:text-ink">יצירת קשר</Link>
+        <Link to="/legal" className="underline underline-offset-2 hover:text-ink">הצהרה ואבטחה</Link>
       </footer>
     </PublicShell>
   );

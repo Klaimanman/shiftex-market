@@ -125,7 +125,7 @@ describe('onboarding & invitations', () => {
 
   it('admin approves; access is granted immediately', async () => {
     await db.as(ADMIN, `select public.admin_set_member_status($1, 'active')`, [BASIC]);
-    expect((await db.as(BASIC, `select * from public.shift_periods`)).length).toBe(5);
+    expect((await db.as(BASIC, `select * from public.shift_periods`)).length).toBe(6);
   });
 
   it('self-selected badges are stored and become qualifications after approval', async () => {
@@ -199,9 +199,10 @@ describe('listings: qualification, ownership, validation', () => {
     expect(await db.asError(BASIC, `update public.shift_listings set type = 'seek' where id = $1`, [id])).toMatch(/immutable_field/);
   });
 
-  it('users cannot hard-delete listings', async () => {
+  it("owners can delete their own listing; others cannot", async () => {
     const id = await createOffer(BASIC, { date: future(9) });
-    expect(await db.asError(BASIC, `delete from public.shift_listings where id = $1`, [id])).toMatch(/permission denied/);
+    expect(await db.as(SENIOR, `delete from public.shift_listings where id = $1 returning id`, [id])).toHaveLength(0);
+    expect(await db.as(BASIC, `delete from public.shift_listings where id = $1 returning id`, [id])).toHaveLength(1);
   });
 
   it('optimistic concurrency: two users acting on the same version — only one wins', async () => {
@@ -238,7 +239,8 @@ describe('listings: qualification, ownership, validation', () => {
        values ('seek', $1::date[], $2, auth.uid(), now(), now()) returning want_position_ids`,
       [`{${future(3)}}`, org],
     );
-    expect(row.want_position_ids).toEqual([posOpen]); // not the restricted one
+    expect(row.want_position_ids).toContain(posOpen);
+    expect(row.want_position_ids).not.toContain(posRestricted); // not the restricted one
   });
 
   it('a shift expires when it begins', async () => {

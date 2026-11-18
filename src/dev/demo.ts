@@ -10,13 +10,15 @@ const ME = '22222222-2222-4222-8222-222222222222';
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 
 const periods = [
-  { id: id(100), org_id: ORG, code: 'port', label: 'נמל', start_time: '06:00:00', end_time: '14:00:00', sort_order: 0 },
   { id: id(101), org_id: ORG, code: 'morning', label: 'בוקר', start_time: '07:00:00', end_time: '15:00:00', sort_order: 1 },
   { id: id(102), org_id: ORG, code: 'afternoon', label: 'צהריים', start_time: '15:00:00', end_time: '23:00:00', sort_order: 2 },
   { id: id(103), org_id: ORG, code: 'night', label: 'לילה', start_time: '23:00:00', end_time: '07:00:00', sort_order: 3 },
-  { id: id(104), org_id: ORG, code: 'oncall', label: 'כונן', start_time: null, end_time: null, sort_order: 4 },
+  { id: id(104), org_id: ORG, code: 'oncall', label: 'כונן בוקר', start_time: null, end_time: null, sort_order: 4 },
+  { id: id(105), org_id: ORG, code: 'oncall_afternoon', label: 'כונן צהריים', start_time: null, end_time: null, sort_order: 5 },
+  { id: id(106), org_id: ORG, code: 'oncall_night', label: 'כונן לילה', start_time: null, end_time: null, sort_order: 6 },
 ];
 const positions = [
+  { id: id(200), org_id: ORG, name: 'נמל', requires_qualification: false, is_active: true, sort_order: 0 },
   { id: id(201), org_id: ORG, name: 'עמדה א', requires_qualification: true, is_active: true, sort_order: 1 },
   { id: id(202), org_id: ORG, name: 'עמדה ב', requires_qualification: false, is_active: true, sort_order: 2 },
   { id: id(203), org_id: ORG, name: 'סיור 1', requires_qualification: true, is_active: true, sort_order: 3 },

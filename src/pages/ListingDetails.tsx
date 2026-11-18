@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
-import { ArrowLeftRight, Check, Lock, Mail, MessageCircle, Pencil, X } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeftRight, Check, Lock, Mail, MessageCircle, Pencil, Trash2, X } from 'lucide-react';
 import { PageHeader, Panel, Section } from '@/components/PageHeader';
 import { Button, ButtonLink } from '@/components/ui/button';
 import { Avatar, Tag } from '@/components/ui/controls';
@@ -14,7 +14,7 @@ import { CloseListingSheet } from '@/components/CloseListingSheet';
 import { InterestSheet } from '@/components/InterestSheet';
 import { useMe } from '@/data/session';
 import { useColleagues, useReference, type Reference } from '@/data/reference';
-import { useListing, useListingInterests, useMyInterest, useSetInterestStatus, useUpdateListing } from '@/data/listings';
+import { useDeleteListing, useListing, useListingInterests, useMyInterest, useSetInterestStatus, useUpdateListing } from '@/data/listings';
 import { formatLong, formatShort, relativeTimeHe } from '@/domain/dates';
 import { isOpen } from '@/domain/matching';
 import { composeWhatsAppMessage, type TransferEmail } from '@/domain/messages';
@@ -71,6 +71,9 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
   const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   const update = useUpdateListing();
+  const del = useDeleteListing();
+  const navigate = useNavigate();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const interests = useListingInterests(l.id, isOwner);
   const myInterest = useMyInterest(isOwner ? undefined : l.id, me.user_id);
   const setInterest = useSetInterestStatus();
@@ -252,8 +255,29 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
             )
           )}
           {open && <p className="text-xs text-muted">״בתיאום״ מסמן לאחרים שכבר מדברים על המשמרת. המודעה נשארת גלויה עד שסוגרים אותה.</p>}
+          <Button variant="danger" size="sm" icon={<Trash2 className="size-4" aria-hidden="true" />} onClick={() => setDeleteOpen(true)}>
+            מחיקת המודעה
+          </Button>
         </div>
       )}
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="למחוק את המודעה?"
+        body={l.status === 'closed_taken' ? 'המשמרת כבר נלקחה. המודעה תימחק לגמרי מהרשימות.' : 'המודעה תימחק לגמרי ותוסר מהלוח. אי אפשר לשחזר.'}
+        confirmLabel="מחיקה"
+        tone="danger"
+        onConfirm={async () => {
+          try {
+            await del.mutateAsync(l.id);
+            toast.success('המודעה נמחקה');
+            navigate('/mine', { replace: true });
+          } catch (e) {
+            toast.error(e);
+            throw e;
+          }
+        }}
+      />
 
       {isOwner && (
         <Section title="מי הביע עניין" className="mt-8">
