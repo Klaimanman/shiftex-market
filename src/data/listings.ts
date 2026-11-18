@@ -160,7 +160,7 @@ export function useSetInterestStatus() {
   });
 }
 
-export interface Contact { user_id: string; full_name: string; phone: string | null }
+export interface Contact { user_id: string; full_name: string; phone: string | null; email: string | null }
 
 export async function fetchContact(listingId: string, userId?: string | null): Promise<Contact> {
   return unwrap(await supabase.rpc('get_contact', { p_listing: listingId, p_user: userId ?? null })) as Contact;

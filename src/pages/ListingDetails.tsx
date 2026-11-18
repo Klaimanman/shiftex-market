@@ -66,6 +66,8 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
   const [interestOpen, setInterestOpen] = useState(false);
   const [closeOpen, setCloseOpen] = useState(false);
   const [emailData, setEmailData] = useState<TransferEmail | null>(null);
+  /** whose email goes in CC: null = the listing owner, string = a specific member, undefined = none */
+  const [ccUser, setCcUser] = useState<string | null | undefined>(undefined);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   const update = useUpdateListing();
@@ -213,7 +215,10 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
                 הבעת עניין
               </Button>
             )}
-            <Button variant="ghost" disabled={locked} onClick={() => setEmailData(emailFor({ full_name: me.full_name }))} icon={<Mail className="size-4" aria-hidden="true" />}>
+            <Button variant="ghost" disabled={locked} onClick={() => {
+                setCcUser(null);
+                setEmailData(emailFor({ full_name: me.full_name }));
+              }} icon={<Mail className="size-4" aria-hidden="true" />}>
               מייל לרכז
             </Button>
           </div>
@@ -238,7 +243,10 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
             </div>
           ) : (
             l.status === 'closed_taken' && (
-              <Button variant="secondary" icon={<Mail className="size-4" aria-hidden="true" />} onClick={() => setEmailData(emailFor(takenByProfile))}>
+              <Button variant="secondary" icon={<Mail className="size-4" aria-hidden="true" />} onClick={() => {
+                setCcUser(l.taken_by ?? undefined);
+                setEmailData(emailFor(takenByProfile));
+              }}>
                 הכנת מייל לרכז השיבוץ
               </Button>
             )
@@ -298,10 +306,19 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
           onOpenChange={setCloseOpen}
           listing={l}
           suggested={interests.data?.find((i) => i.status === 'accepted')?.user_id ?? null}
-          onClosed={(status, takenBy) => status === 'closed_taken' && setEmailData(emailFor(takenBy))}
+          onClosed={(status, takenBy) => {
+            if (status !== 'closed_taken') return;
+            setCcUser(takenBy?.id ?? undefined);
+            setEmailData(emailFor(takenBy));
+          }}
         />
       )}
-      {emailData && <EmailDraftSheet open={!!emailData} onOpenChange={(o) => !o && setEmailData(null)} data={emailData} />}
+      {emailData && <EmailDraftSheet
+          open={!!emailData}
+          onOpenChange={(o) => !o && setEmailData(null)}
+          data={emailData}
+          cc={ccUser === undefined ? null : { listingId: l.id, userId: ccUser }}
+        />}
       <ConfirmDialog
         open={withdrawOpen}
         onOpenChange={setWithdrawOpen}

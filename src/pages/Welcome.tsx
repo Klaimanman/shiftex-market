@@ -6,6 +6,7 @@ import { Logo } from '@/components/Logo';
 import { Notice } from '@/components/ui/feedback';
 import { Spinner } from '@/components/ui/feedback';
 import { signInWithGoogle } from '@/data/session';
+import { GoogleButton } from '@/components/GoogleButton';
 import { errorMessage } from '@/lib/errors';
 
 function GoogleIcon() {
@@ -28,6 +29,7 @@ const POINTS = [
 export function WelcomePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [gsiAvailable, setGsiAvailable] = useState(true);
 
   const start = async () => {
     setBusy(true);
@@ -57,15 +59,25 @@ export function WelcomePage() {
           </p>
 
           <div className="mt-8 max-w-sm space-y-3">
-            <button
-              type="button"
-              onClick={start}
-              disabled={busy}
-              className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-line-strong bg-surface text-base font-medium text-ink shadow-[0_1px_2px_rgb(0_0_0/0.05)] transition-colors hover:bg-surface-2 disabled:opacity-60"
-            >
-              {busy ? <Spinner className="size-5" /> : <GoogleIcon />}
-              כניסה עם Google
-            </button>
+            {gsiAvailable ? (
+              busy ? (
+                <div className="flex h-12 items-center justify-center gap-2 text-sm text-muted" role="status">
+                  <Spinner className="size-5" /> משלימים את הכניסה…
+                </div>
+              ) : (
+                <GoogleButton onError={setError} onUnavailable={() => setGsiAvailable(false)} onBusy={setBusy} />
+              )
+            ) : (
+              <button
+                type="button"
+                onClick={start}
+                disabled={busy}
+                className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-line-strong bg-surface text-base font-medium text-ink shadow-[0_1px_2px_rgb(0_0_0/0.05)] transition-colors hover:bg-surface-2 disabled:opacity-60"
+              >
+                {busy ? <Spinner className="size-5" /> : <GoogleIcon />}
+                כניסה עם Google
+              </button>
+            )}
             {error && <Notice tone="danger">{error}</Notice>}
             <p className="flex items-start gap-2 text-sm text-muted">
               <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />

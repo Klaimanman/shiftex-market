@@ -73,7 +73,8 @@ export function composeCoordinatorEmail(e: TransferEmail): { subject: string; bo
 }
 
 /** RFC 6068 mailto with CRLF line breaks. The address itself is not percent-encoded. */
-export function buildMailto(to: string, subject: string, body: string): string {
+export function buildMailto(to: string, subject: string, body: string, cc?: string | null): string {
   const enc = (s: string) => encodeURIComponent(s.replace(/\r?\n/g, '\r\n'));
-  return `mailto:${to.trim()}?subject=${enc(subject)}&body=${enc(body)}`;
+  const ccPart = cc && cc.trim() ? `&cc=${encodeURIComponent(cc.trim())}` : '';
+  return `mailto:${to.trim()}?subject=${enc(subject)}${ccPart}&body=${enc(body)}`;
 }

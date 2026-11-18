@@ -299,6 +299,20 @@ describe('privacy', () => {
     expect(log.n).toBeGreaterThan(0);
   });
 
+  it('the taker and the owner can get each other\'s email after closing (for the coordinator CC)', async () => {
+    const id = await createOffer(SENIOR, { date: future(22) });
+    // before closing, an unrelated member may contact the owner, and gets the email too
+    const [open] = await db.as<{ c: any }>(BASIC, `select public.get_contact($1) as c`, [id]);
+    expect(open.c.email).toBe('senior@example.com');
+    await db.as(SENIOR, `update public.shift_listings set status = 'closed_taken', taken_by = $2 where id = $1`, [id, BASIC]);
+    const [ownerSide] = await db.as<{ c: any }>(SENIOR, `select public.get_contact($1, $2) as c`, [id, BASIC]);
+    expect(ownerSide.c.email).toBe('basic@example.com');
+    const [takerSide] = await db.as<{ c: any }>(BASIC, `select public.get_contact($1) as c`, [id]);
+    expect(takerSide.c.email).toBe('senior@example.com');
+    // a third member cannot get it once the listing is closed
+    expect(await db.asError(ADMIN, `select public.get_contact($1)`, [id])).toMatch(/listing_closed|not_qualified/);
+  });
+
   it('admins can read contact details of their members', async () => {
     expect(await db.as(ADMIN, `select * from public.profile_private where user_id = $1`, [BASIC])).toHaveLength(1);
   });

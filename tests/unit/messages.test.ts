@@ -43,6 +43,9 @@ describe('coordinator email', () => {
     expect(href.startsWith('mailto:coord@example.com?subject=')).toBe(true);
     expect(href).toContain('%0D%0A');
     expect(href).not.toContain('\n');
+    const withCc = buildMailto('coord@example.com', subject, body, 'other@gmail.com');
+    expect(withCc).toContain('&cc=other%40gmail.com&body=');
+    expect(buildMailto('coord@example.com', subject, body, '  ')).not.toContain('cc=');
   });
 });
 
