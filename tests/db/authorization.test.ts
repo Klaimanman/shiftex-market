@@ -286,10 +286,15 @@ describe('privacy', () => {
     expect(await db.as(ADMIN, `select * from public.profile_private where user_id = $1`, [BASIC])).toHaveLength(1);
   });
 
-  it('invite codes are stored only as hashes and are invisible to employees', async () => {
+  it('invite codes are viewable by admins only, and unlimited codes work', async () => {
     expect(await db.as(BASIC, `select * from public.organization_invites`)).toHaveLength(0);
-    const rows = await db.as<any>(ADMIN, `select code_hash, code_hint from public.organization_invites`);
-    expect(rows[0].code_hash).not.toContain(inviteCode.replace('-', ''));
+    const rows = await db.as<any>(ADMIN, `select code from public.organization_invites where code = $1`, [inviteCode]);
+    expect(rows).toHaveLength(1);
+    const [u] = await db.as<{ j: any }>(ADMIN, `select public.admin_create_invite('permanent', null, null) as j`);
+    const [inv] = await db.as<any>(ADMIN, `select max_uses, expires_at, code from public.organization_invites where id = $1`, [u.j.id]);
+    expect(inv.max_uses).toBe(1000000);
+    expect(inv.expires_at).toBeNull();
+    expect(inv.code).toBe(u.j.code);
   });
 });
 

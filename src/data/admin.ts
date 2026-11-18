@@ -33,6 +33,7 @@ export interface AdminStats {
 export interface Invite {
   id: string;
   code_hint: string;
+  code: string | null;
   label: string | null;
   max_uses: number;
   use_count: number;
@@ -90,7 +91,7 @@ export function useInvites() {
       unwrap(
         await supabase
           .from('organization_invites')
-          .select('id, code_hint, label, max_uses, use_count, expires_at, revoked_at, created_at')
+          .select('id, code_hint, code, label, max_uses, use_count, expires_at, revoked_at, created_at')
           .order('created_at', { ascending: false }),
       ) as Invite[],
   });

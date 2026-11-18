@@ -4,7 +4,7 @@
 | Threat | Control |
 |---|---|
 | Outsider signs in with Google | No data readable without an **active** membership; joining needs an invite code **and** admin approval |
-| Invite-code guessing | Codes are 50-bit random, stored as SHA-256; 5 failed attempts/hour per user; codes can expire, be capped and revoked |
+| Invite-code guessing | Codes are 50-bit random, looked up by SHA-256 hash; 5 failed attempts/hour per user; codes can expire, be capped and revoked. Plaintext is kept for admin display only (RLS: admins) — joining still requires admin approval |
 | Employee escalates privileges | Membership, roles and badges are writable only via admin RPCs; no table grants for them |
 | Self-assigned qualification | Badges may be chosen only while **pending** and are reviewed at approval; afterwards admin-only |
 | Unqualified user takes a restricted shift | Enforced in `prepare_listing`, `express_interest` and `get_contact` (server), not just hidden in the UI |
