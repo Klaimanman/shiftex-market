@@ -10,7 +10,7 @@ import { useMe } from '@/data/session';
 import { useReference } from '@/data/reference';
 import { useOpenListings, useWeekListings } from '@/data/listings';
 import { useAdminStats } from '@/data/admin';
-import { findSuggestions, isOpen } from '@/domain/matching';
+import { isOpen } from '@/domain/matching';
 import { weekCounts } from '@/domain/marketplace';
 import { firstName } from '@/domain/messages';
 import { formatLong, startOfWeek, todayIL, weekDays } from '@/domain/dates';
@@ -34,13 +34,17 @@ export function HomePage() {
   const week = useWeekListings(weekStart);
 
   const mine = useMemo(() => (open.data ?? []).filter((l) => l.owner_id === me.user_id && isOpen(l)), [open.data, me.user_id]);
-  const suggestions = useMemo(() => {
-    if (!open.data) return [];
-    const others = open.data.filter((l) => l.owner_id !== me.user_id);
-    const isQ = (u: string, p: string) => (u === me.user_id ? me.qualified.has(p) : undefined);
-    const seen = new Set<string>();
-    return findSuggestions(mine, others, isQ).filter((s) => !seen.has(s.other.id) && seen.add(s.other.id));
-  }, [open.data, mine, me.user_id, me.qualified]);
+  // Soonest shifts first.
+  const sortKey = (l: { type: string; shift_date: string | null; want_dates: string[]; created_at: string }) =>
+    `${l.type === 'seek' ? l.want_dates[0] ?? '' : l.shift_date ?? ''}|${l.created_at}`;
+  const offers = useMemo(
+    () => (open.data ?? []).filter((l) => isOpen(l) && l.type !== 'seek').sort((a, b) => sortKey(a).localeCompare(sortKey(b))),
+    [open.data],
+  );
+  const seeks = useMemo(
+    () => (open.data ?? []).filter((l) => isOpen(l) && l.type === 'seek').sort((a, b) => sortKey(a).localeCompare(sortKey(b))),
+    [open.data],
+  );
   const counts = useMemo(() => (r && week.data ? weekCounts(week.data, days, r.periods) : undefined), [r, week.data, days]);
 
   return (
@@ -83,43 +87,40 @@ export function HomePage() {
         )}
       </Section>
 
-      <Section
-        title="התאמות בשבילך"
-        action={
-          suggestions.length > 3 && (
-            <Link to="/matches" className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">
-              כל ההתאמות ({suggestions.length}) <ChevronLeft className="size-4" aria-hidden="true" />
-            </Link>
-          )
-        }
-      >
-        {open.isLoading || !r ? (
-          <ListSkeleton rows={2} />
-        ) : open.error ? (
-          <ErrorState error={open.error} onRetry={() => open.refetch()} />
-        ) : mine.length === 0 ? (
-          <Panel>
-            <EmptyState compact title="אין כרגע מודעות פעילות שלך" body="כשמפרסמים מסירה, חיפוש או החלפה — המערכת מציגה כאן משמרות מתאימות." />
-          </Panel>
-        ) : suggestions.length === 0 ? (
-          <Panel>
-            <EmptyState compact title="עדיין אין התאמות" body="ההתאמות מתעדכנות אוטומטית, ותגיע התראה כשתעלה משמרת מתאימה." />
-          </Panel>
-        ) : (
-          <div className="grid gap-2 md:grid-cols-2">
-            {suggestions.slice(0, 4).map((s) => (
-              <ListingCard
-                key={s.other.id}
-                listing={s.other}
-                reference={r}
-                qualified={me.qualified}
-                showDate
-                badge={<span className={s.result.level === 'exact' ? 'text-xs font-semibold text-accent' : 'text-xs font-medium text-warn'}>{s.result.level === 'exact' ? 'התאמה מלאה' : 'התאמה חלקית'}</span>}
-              />
-            ))}
-          </div>
-        )}
-      </Section>
+      {(['offers', 'seeks'] as const).map((kind) => {
+        const items = kind === 'offers' ? offers : seeks;
+        return (
+          <Section
+            key={kind}
+            title={kind === 'offers' ? 'מסירות משמרת' : 'חיפושי משמרת'}
+            action={
+              <Link to={`/${kind}`} className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">
+                הכול ({items.length}) <ChevronLeft className="size-4" aria-hidden="true" />
+              </Link>
+            }
+          >
+            {open.isLoading || !r ? (
+              <ListSkeleton rows={2} />
+            ) : open.error ? (
+              <ErrorState error={open.error} onRetry={() => open.refetch()} />
+            ) : items.length === 0 ? (
+              <Panel>
+                <EmptyState
+                  compact
+                  title={kind === 'offers' ? 'אין כרגע משמרות למסירה' : 'אין כרגע חיפושי משמרת'}
+                  action={<ButtonLink to={`/new?type=${kind === 'offers' ? 'offer' : 'seek'}`} variant="secondary">{kind === 'offers' ? 'מסירת משמרת' : 'חיפוש משמרת'}</ButtonLink>}
+                />
+              </Panel>
+            ) : (
+              <div className="grid gap-2 md:grid-cols-2">
+                {items.slice(0, 4).map((l) => (
+                  <ListingCard key={l.id} listing={l} reference={r} qualified={me.qualified} showDate isMine={l.owner_id === me.user_id} />
+                ))}
+              </div>
+            )}
+          </Section>
+        );
+      })}
 
       <Section
         title="המודעות הפעילות שלי"

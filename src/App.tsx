@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { isConfigured } from './lib/supabase';
 import { MeProvider, useMyContext, useSession } from './data/session';
 import { AppShell } from './components/AppShell';
@@ -19,7 +19,7 @@ import { MarketplacePage } from './pages/Marketplace';
 import { ListingDetailsPage } from './pages/ListingDetails';
 import { ListingEditorPage } from './pages/ListingEditor';
 import { MyListingsPage } from './pages/MyListings';
-import { MatchesPage } from './pages/Matches';
+import { ListingSectionPage } from './pages/ListingSection';
 import { SavedSearchesPage } from './pages/SavedSearches';
 import { NotificationsPage } from './pages/Notifications';
 import { ProfilePage } from './pages/Profile';
@@ -73,7 +73,9 @@ function Gate() {
             <Route path="/listing/:id" element={<ListingDetailsPage />} />
             <Route path="/listing/:id/edit" element={<ListingEditorPage />} />
             <Route path="/mine" element={<MyListingsPage />} />
-            <Route path="/matches" element={<MatchesPage />} />
+            <Route path="/offers" element={<ListingSectionPage kind="offers" key="offers" />} />
+            <Route path="/seeks" element={<ListingSectionPage kind="seeks" key="seeks" />} />
+            <Route path="/matches" element={<Navigate to="/offers" replace />} />
             <Route path="/saved" element={<SavedSearchesPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/profile" element={<ProfilePage />} />

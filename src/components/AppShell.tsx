@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-  Bell, Bookmark, CalendarRange, Home, LayoutList, Moon, Plus, Settings, ShieldCheck, Sparkles, Sun,
+  Bell, Bookmark, CalendarRange, Home, LayoutList, Moon, Plus, Search, Send, Settings, ShieldCheck, Sun,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useTheme } from '@/lib/theme';
@@ -14,7 +14,8 @@ import { Avatar } from './ui/controls';
 const NAV = [
   { to: '/', label: 'בית', icon: Home, end: true },
   { to: '/market', label: 'לוח שבועי', icon: CalendarRange },
-  { to: '/matches', label: 'התאמות', icon: Sparkles },
+  { to: '/offers', label: 'מסירות משמרת', icon: Send },
+  { to: '/seeks', label: 'חיפושי משמרת', icon: Search },
   { to: '/mine', label: 'המודעות שלי', icon: LayoutList },
   { to: '/saved', label: 'חיפושים שמורים', icon: Bookmark },
   { to: '/notifications', label: 'התראות', icon: Bell },
