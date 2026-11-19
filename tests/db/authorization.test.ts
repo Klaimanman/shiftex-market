@@ -162,7 +162,15 @@ describe('listings: qualification, ownership, validation', () => {
     const id = await createOffer(SENIOR, { position: posRestricted, date: future(4) });
     expect(await db.asError(BASIC, `select public.express_interest($1)`, [id])).toMatch(/not_qualified/);
     expect(await db.asError(BASIC, `select public.get_contact($1)`, [id])).toMatch(/not_qualified/);
-    // ...but can still see that it exists (visible but locked)
+    // ...and does not see it at all: restricted listings are hidden from unqualified employees.
+    expect(await db.as(BASIC, `select id from public.shift_listings where id = $1`, [id])).toHaveLength(0);
+    // The owner and admins still see it.
+    expect(await db.as(SENIOR, `select id from public.shift_listings where id = $1`, [id])).toHaveLength(1);
+    expect(await db.as(ADMIN, `select id from public.shift_listings where id = $1`, [id])).toHaveLength(1);
+  });
+
+  it("open-position listings stay visible to everyone", async () => {
+    const id = await createOffer(SENIOR, { position: posOpen, date: future(5) });
     expect(await db.as(BASIC, `select id from public.shift_listings where id = $1`, [id])).toHaveLength(1);
   });
 
