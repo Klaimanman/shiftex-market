@@ -44,7 +44,7 @@ export function EmailDraftSheet({
   const searchSeq = useRef(0);
 
   const composed = useMemo(
-    () => composeCoordinatorEmail({ ...data, guard2: { ...data.guard2, name: guard2Name || 'שם המאבטח השני' } }),
+    () => composeCoordinatorEmail({ ...data, guard2: { ...data.guard2, name: guard2Name } }),
     [data, guard2Name],
   );
 
@@ -78,7 +78,6 @@ export function EmailDraftSheet({
       .then((c) => {
         if (cancelled) return;
         if (c.email) setCc(c.email);
-        if (c.full_name) setGuard2Name(c.full_name);
       })
       .catch(() => {
         /* leave empty; the user can search */
@@ -209,7 +208,7 @@ export function EmailDraftSheet({
           )}
         </div>
 
-        <Field label="שם המאבטח השני" hint="מופיע בגוף המייל.">
+        <Field label="שם המאבטח השני" hint="ממלאים ידנית, או בוחרים מאבטח בשדה העותק למעלה.">
           <Input value={guard2Name} onChange={(e) => setGuard2Name(e.target.value)} maxLength={80} />
         </Field>
 

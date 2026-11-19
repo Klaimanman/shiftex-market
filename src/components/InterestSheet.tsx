@@ -33,7 +33,7 @@ export function InterestSheet({ open, onOpenChange, listing }: { open: boolean; 
   const submit = async () => {
     try {
       await express.mutateAsync({ listingId: listing.id, offeredListingId: offered || null, note: note.trim() || null });
-      toast.success('העניין נשלח. בעל המודעה קיבל התראה.');
+      toast.success('משמרת נמסרה. בעל המודעה קיבל התראה.');
       onOpenChange(false);
     } catch (e) {
       toast.error(e);

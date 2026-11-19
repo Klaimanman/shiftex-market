@@ -3,7 +3,7 @@
  * the user always reviews and edits the text, then their own app sends it.
  * Wording is gender-neutral.
  */
-import { formatLong, formatNumeric, type ISODate } from './dates';
+import { dayOfWeek, formatLong, formatNumeric, WEEKDAYS_HE, type ISODate } from './dates';
 import type { ListingType } from './types';
 import { toWhatsAppNumber } from './phone';
 
@@ -65,11 +65,41 @@ export interface TransferEmail {
  *   Subject: החלפת משמרת בתאריך [date]
  *   Body: greeting, then for each guard: name / current shift / desired shift, then thanks.
  */
+/** Position that is the default and is therefore not mentioned in the email. */
+export const DEFAULT_POSITION = 'נמל';
+
+export interface EmailShift {
+  date: ISODate | null;
+  /** base period label: בוקר / צהריים / לילה (for on-call periods, the base without "כונן") */
+  period: string | null;
+  onCall: boolean;
+  hasOption: boolean;
+  position: string | null;
+  /** non-standard shift name, used instead of the period */
+  customTitle?: string | null;
+}
+
+/**
+ * Short shift text for the coordinator email: "[day] [shift] [additions]".
+ *   "שלישי לילה" · "שלישי לילה כונן" · "שלישי לילה אופציה" · "שלישי בוקר קשמ״ז"
+ * The default position (נמל) is not mentioned.
+ */
+export function emailShiftText(s: EmailShift): string {
+  const parts: string[] = [];
+  if (s.date) parts.push(WEEKDAYS_HE[dayOfWeek(s.date)]);
+  parts.push(s.customTitle || s.period || '');
+  if (s.onCall) parts.push('כונן');
+  if (s.hasOption) parts.push('אופציה');
+  if (s.position && s.position.trim() !== DEFAULT_POSITION) parts.push(s.position.trim());
+  return parts.filter(Boolean).join(' ');
+}
+
 export function composeCoordinatorEmail(e: TransferEmail): { subject: string; body: string } {
   const dateText = e.date ? formatNumeric(e.date) : '';
+  const dayText = e.date ? ` ביום ${WEEKDAYS_HE[dayOfWeek(e.date)]}` : '';
   const block = (g: GuardLine) => [g.name, `משמרת נוכחית: ${g.current}`, `משמרת רצויה: ${g.desired}`];
   const lines = [
-    `שלום וברכה, אבקש החלפת משמרת בתאריך ${dateText}`.trim(),
+    `שלום וברכה, אבקש החלפת משמרת בתאריך ${dateText}${dayText}`.trim(),
     '',
     ...block(e.guard1),
     '',

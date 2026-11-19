@@ -18,8 +18,8 @@ import { useColleagues, useReference, type Reference } from '@/data/reference';
 import { useDeleteListing, useListing, useListingInterests, useMyInterest, useSetInterestStatus, useUpdateListing } from '@/data/listings';
 import { formatLong, formatShort, relativeTimeHe } from '@/domain/dates';
 import { isOpen } from '@/domain/matching';
-import { composeWhatsAppMessage, NO_SHIFT, type TransferEmail } from '@/domain/messages';
-import { OPTION_LABEL, TYPE_TITLE } from '@/domain/labels';
+import { composeWhatsAppMessage, emailShiftText, NO_SHIFT, type TransferEmail } from '@/domain/messages';
+import { OPTION_LABEL, PERIOD_FALLBACK, TYPE_TITLE } from '@/domain/labels';
 import type { Interest, Listing, MiniProfile } from '@/domain/types';
 import { cn } from '@/lib/cn';
 
@@ -81,7 +81,6 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
   const myInterest = useMyInterest(isOwner ? undefined : l.id, me.user_id);
   const setInterest = useSetInterestStatus();
 
-  const shiftName = l.type === 'seek' ? '' : `${r.shiftTitle(l)}${times ? ` (${times})` : ''}`;
 
   /**
    * Coordinator email in the organization's format. guard1 = listing owner, guard2 = the colleague.
@@ -89,11 +88,38 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
    *  seek:     owner receives a shift          → owner: none → wanted, other: wanted → none
    *  exchange: both give and receive           → owner: shift → wanted, other: wanted → shift
    */
-  const emailFor = (counterpart: MiniProfile | null | { full_name: string }): TransferEmail => {
+  const periodInfo = (pid: string | null | undefined) => {
+    const p = pid ? r.periodById.get(pid) : undefined;
+    if (!p) return { period: null, onCall: false };
+    const baseCode = ({ oncall: 'morning', oncall_afternoon: 'afternoon', oncall_night: 'night' } as const)[p.code as 'oncall'];
+    if (!baseCode) return { period: p.label, onCall: false };
+    const base = r.periods.find((x) => x.code === baseCode);
+    return { period: base?.label ?? PERIOD_FALLBACK[baseCode], onCall: true };
+  };
+
+  const emailFor = (_counterpart: MiniProfile | null | { full_name: string }): TransferEmail => {
     const ownerName = l.owner?.full_name ?? '';
-    const otherName = counterpart?.full_name ?? '';
-    const given = l.type === 'seek' ? '' : `${shiftName}, ${r.positionName(l.position_id)}`;
-    const wanted = l.type === 'offer' ? '' : wantedSummary(l, r);
+    const given =
+      l.type === 'seek'
+        ? ''
+        : emailShiftText({
+            date: l.shift_date,
+            ...periodInfo(l.period_id),
+            hasOption: l.has_option,
+            position: r.positionName(l.position_id),
+            customTitle: l.period_id ? null : l.custom_title,
+          });
+    const wanted =
+      l.type === 'offer'
+        ? ''
+        : l.want_dates.length === 1 && l.want_period_ids.length <= 1
+          ? emailShiftText({
+              date: l.want_dates[0],
+              ...periodInfo(l.want_period_ids[0]),
+              hasOption: false,
+              position: l.want_position_ids.length === 1 ? r.positionName(l.want_position_ids[0]) : null,
+            })
+          : wantedSummary(l, r);
     const owner =
       l.type === 'offer' ? { current: given, desired: NO_SHIFT } : l.type === 'seek' ? { current: NO_SHIFT, desired: wanted } : { current: given, desired: wanted };
     const other =
@@ -101,7 +127,7 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
     return {
       date: l.shift_date ?? l.want_dates[0] ?? null,
       guard1: { name: ownerName, ...owner },
-      guard2: { name: otherName, ...other },
+      guard2: { name: '', ...other },
     };
   };
 
@@ -221,7 +247,7 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
             </Button>
             {myInterest.data && myInterest.data.status !== 'withdrawn' ? (
               <Button variant="secondary" onClick={() => setWithdrawOpen(true)} icon={<Check className="size-4 text-accent" aria-hidden="true" />}>
-                {myInterest.data.status === 'accepted' ? 'העניין התקבל' : myInterest.data.status === 'declined' ? 'העניין נדחה' : 'העניין נשלח'}
+                {myInterest.data.status === 'accepted' ? 'העניין התקבל' : myInterest.data.status === 'declined' ? 'העניין נדחה' : 'משמרת נמסרה'}
               </Button>
             ) : (
               <Button variant="secondary" disabled={locked} onClick={() => setInterestOpen(true)}>

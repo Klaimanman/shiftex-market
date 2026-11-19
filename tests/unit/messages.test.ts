@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildMailto, buildWhatsAppUrl, composeCoordinatorEmail, composeWhatsAppMessage } from '@/domain/messages';
+import { buildMailto, buildWhatsAppUrl, composeCoordinatorEmail, composeWhatsAppMessage, emailShiftText } from '@/domain/messages';
 import { formatILMobile, normalizeILMobile } from '@/domain/phone';
 import { groupDay, passesFilters } from '@/domain/marketplace';
 import { EMPTY_FILTERS, type Listing, type ShiftPeriod } from '@/domain/types';
@@ -35,21 +35,21 @@ describe('coordinator email', () => {
   it('composes the agreed template and a valid mailto', () => {
     const { subject, body } = composeCoordinatorEmail({
       date: '2026-11-20',
-      guard1: { name: 'ישראל ישראלי', current: 'לילה, מסוף', desired: 'ללא משמרת' },
-      guard2: { name: 'דנה כהן', current: 'ללא משמרת', desired: 'לילה, מסוף' },
+      guard1: { name: 'ישראל ישראלי', current: 'שישי לילה מסוף', desired: 'ללא משמרת' },
+      guard2: { name: 'דנה כהן', current: 'ללא משמרת', desired: 'שישי לילה מסוף' },
     });
     expect(subject).toBe('החלפת משמרת בתאריך 20.11.2026');
     expect(body).toBe(
       [
-        'שלום וברכה, אבקש החלפת משמרת בתאריך 20.11.2026',
+        'שלום וברכה, אבקש החלפת משמרת בתאריך 20.11.2026 ביום שישי',
         '',
         'ישראל ישראלי',
-        'משמרת נוכחית: לילה, מסוף',
+        'משמרת נוכחית: שישי לילה מסוף',
         'משמרת רצויה: ללא משמרת',
         '',
         'דנה כהן',
         'משמרת נוכחית: ללא משמרת',
-        'משמרת רצויה: לילה, מסוף',
+        'משמרת רצויה: שישי לילה מסוף',
         '',
         'תודה רבה מראש.',
       ].join('\n'),
@@ -118,5 +118,15 @@ describe('form validation', () => {
     expect(listingFormSchema.safeParse({ ...ok, periodId: 'special', customTitle: 'תגבור', customStart: '16:00', customEnd: '22:00' }).success).toBe(true);
     expect(listingFormSchema.safeParse({ ...ok, type: 'seek' }).success).toBe(false); // no wanted dates
     expect(listingFormSchema.safeParse({ ...ok, type: 'seek', wantDates: ['2026-11-20'] }).success).toBe(true);
+  });
+});
+
+describe("emailShiftText", () => {
+  const base = { date: "2026-11-24" as const, period: "לילה", onCall: false, hasOption: false, position: "נמל" };
+  it("omits the default position", () => expect(emailShiftText(base)).toBe("שלישי לילה"));
+  it("adds on-call, option and position", () => {
+    expect(emailShiftText({ ...base, onCall: true })).toBe("שלישי לילה כונן");
+    expect(emailShiftText({ ...base, hasOption: true })).toBe("שלישי לילה אופציה");
+    expect(emailShiftText({ ...base, position: "קישון" })).toBe("שלישי לילה קישון");
   });
 });
