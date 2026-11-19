@@ -58,7 +58,7 @@ beforeAll(async () => {
   await db.createAuthUser(OUTSIDER, 'outsider@example.com', 'Outsider');
 
   // Admin completes the profile step, then bootstrap runs from the SQL editor.
-  await db.as(ADMIN, `select public.save_my_profile('Admin User', '050-0000001')`);
+  await db.as(ADMIN, `select public.save_my_profile('מנהל ראשי', '050-0000001')`);
   const [b] = await db.system<{ id: string }>(`select public.bootstrap_organization('Test Org', 'admin@example.com') as id`);
   org = b.id;
   [{ id: posOpen }] = await db.system(`insert into public.positions (org_id, name, sort_order) values ($1, 'Open', 1) returning id`, [org]);
@@ -95,11 +95,11 @@ describe('bootstrap & admin provisioning', () => {
 
 describe('onboarding & invitations', () => {
   it('rejects invalid Israeli phone numbers', async () => {
-    expect(await db.asError(BASIC, `select public.save_my_profile('Basic User', '03-1234567')`)).toMatch(/invalid_phone/);
+    expect(await db.asError(BASIC, `select public.save_my_profile('עובד בסיסי', '03-1234567')`)).toMatch(/invalid_phone/);
   });
 
   it('a wrong code is rejected and recorded; 5 failures lock the user out for an hour', async () => {
-    await db.as(OUTSIDER, `select public.save_my_profile('Outsider', '052-9999999')`);
+    await db.as(OUTSIDER, `select public.save_my_profile('אורח חיצוני', '052-9999999')`);
     for (let i = 0; i < 5; i++) {
       const [r] = await db.as<{ j: any }>(OUTSIDER, `select public.validate_invite('WRONG-CODE') as j`);
       expect(r.j.ok).toBe(false);
@@ -109,7 +109,7 @@ describe('onboarding & invitations', () => {
   });
 
   it('a valid code creates a PENDING membership with no marketplace access', async () => {
-    await onboard(BASIC, 'Basic User', '050-1111111');
+    await onboard(BASIC, 'עובד בסיסי', '050-1111111');
     const [ctx] = await db.as<{ c: any }>(BASIC, `select public.my_context() as c`);
     expect(ctx.c.membership.status).toBe('pending');
     expect(await db.as(BASIC, `select * from public.shift_periods`)).toHaveLength(0);
@@ -129,7 +129,7 @@ describe('onboarding & invitations', () => {
   });
 
   it('self-selected badges are stored and become qualifications after approval', async () => {
-    await onboard(SENIOR, 'Senior User', '050-2222222', [badgeSenior]);
+    await onboard(SENIOR, 'מאבטח בכיר', '050-2222222', [badgeSenior]);
     await db.as(ADMIN, `select public.admin_set_member_status($1, 'active')`, [SENIOR]);
     const [r] = await db.as<{ q: boolean }>(SENIOR, `select public.is_qualified(auth.uid(), $1) as q`, [posRestricted]);
     expect(r.q).toBe(true);
@@ -142,9 +142,13 @@ describe('onboarding & invitations', () => {
     expect(await db.asError(BASIC, `select public.admin_set_member_badges($1, $2::uuid[])`, [BASIC, `{${badgeSenior}}`])).toMatch(/forbidden/);
   });
 
+  it('display name must be in Hebrew', async () => {
+    expect(await db.asError(BASIC, `select public.save_my_profile('John Smith', '050-1111111')`)).toMatch(/name_not_hebrew/);
+  });
+
   it('a phone number cannot be claimed twice', async () => {
     await db.as(OTHER, `select 1`); // ensure profile exists via trigger
-    expect(await db.asError(OTHER, `select public.save_my_profile('Other User', '0501111111')`)).toMatch(/phone_taken/);
+    expect(await db.asError(OTHER, `select public.save_my_profile('עובד אחר', '0501111111')`)).toMatch(/phone_taken/);
   });
 });
 
@@ -315,6 +319,16 @@ describe('privacy', () => {
     expect(await db.asError(ADMIN, `select public.get_contact($1)`, [id])).toMatch(/listing_closed|not_qualified/);
   });
 
+  it('colleague lookup returns name + email of active members only, never self', async () => {
+    const [r] = await db.as<{ j: any }>(BASIC, `select public.search_colleagues('senior') as j`);
+    expect(r.j).toEqual([{ user_id: SENIOR, full_name: 'מאבטח בכיר', email: 'senior@example.com' }]);
+    const [self] = await db.as<{ j: any }>(BASIC, `select public.search_colleagues('basic') as j`);
+    expect(self.j).toEqual([]);
+    const [short] = await db.as<{ j: any }>(BASIC, `select public.search_colleagues('s') as j`);
+    expect(short.j).toEqual([]);
+    expect(await db.asError(OUTSIDER, `select public.search_colleagues('senior')`)).toMatch(/not_member/);
+  });
+
   it('admins can read contact details of their members', async () => {
     expect(await db.as(ADMIN, `select * from public.profile_private where user_id = $1`, [BASIC])).toHaveLength(1);
   });
@@ -333,7 +347,7 @@ describe('privacy', () => {
 
 describe('banned / suspended users', () => {
   it('ban takes effect immediately and removes their open listings', async () => {
-    await onboard(OTHER, 'Other User', '050-4444444');
+    await onboard(OTHER, 'עובד אחר', '050-4444444');
     await db.as(ADMIN, `select public.admin_set_member_status($1, 'active')`, [OTHER]);
     const id = await createOffer(OTHER, { date: future(16) });
     expect((await db.as(OTHER, `select id from public.shift_listings`)).length).toBeGreaterThan(0);

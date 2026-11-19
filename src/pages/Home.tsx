@@ -55,6 +55,16 @@ export function HomePage() {
         <h1 className="mt-1 text-xl font-semibold">שלום, {firstName(me.full_name)}</h1>
       </header>
 
+      {!/[א-ת]/.test(me.full_name) && (
+        <Notice tone="warn" className="mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span>כדאי לעדכן שם תצוגה בעברית. הוא יופיע לעמיתים ובמיילים לאחראי הסידור.</span>
+            <Link to="/settings" className="font-medium text-ink underline underline-offset-2">
+              עדכון השם
+            </Link>
+          </div>
+        </Notice>
+      )}
       {me.isAdmin && <AdminNotice />}
       {me.isAdmin && (
         <div className="mb-6">

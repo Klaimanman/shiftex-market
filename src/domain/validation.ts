@@ -10,7 +10,7 @@ export const profileSchema = z.object({
     .trim()
     .min(2, 'יש להזין שם מלא')
     .max(80, 'השם ארוך מדי')
-    .regex(/\p{L}/u, 'יש להזין שם מלא'),
+    .regex(/[א-ת]/, 'יש לכתוב את השם בעברית (הוא יופיע במיילים לאחראי הסידור)'),
   phone: z.string().refine((v) => normalizeILMobile(v) !== null, 'מספר נייד ישראלי לא תקין. לדוגמה: 050-1234567'),
 });
 

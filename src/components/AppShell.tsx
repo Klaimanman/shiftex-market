@@ -10,7 +10,7 @@ import { useUnreadCount } from '@/data/notifications';
 import { useRealtimeSync } from '@/data/realtime';
 import { Logo } from './Logo';
 import { Avatar } from './ui/controls';
-import { AccessibilityMenu } from './AccessibilityMenu';
+import { AccessibilityButton, AccessibilityMenu } from './AccessibilityMenu';
 
 const NAV = [
   { to: '/', label: 'בית', icon: Home, end: true },
@@ -121,6 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/settings" className="grid size-10 place-items-center rounded-md text-ink-2 hover:bg-sunken" aria-label="הגדרות">
             <Settings className="size-[18px]" aria-hidden="true" />
           </Link>
+          <AccessibilityButton />
           <ThemeToggle />
         </div>
       </aside>
@@ -138,6 +139,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <ShieldCheck className="size-[18px]" aria-hidden="true" />
                 </Link>
               )}
+              <AccessibilityButton />
               <ThemeToggle />
               <Link to="/profile" className="ms-1 grid size-10 place-items-center rounded-full" aria-label="פרופיל">
                 <Avatar name={me.full_name} src={me.avatar_url} size={30} />
@@ -198,7 +200,10 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <header className="pt-safe">
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 sm:px-6">
           <Logo />
-          <ThemeToggle />
+          <div className="flex items-center gap-1">
+            <AccessibilityButton />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       <main id="main" className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-10 sm:px-6">

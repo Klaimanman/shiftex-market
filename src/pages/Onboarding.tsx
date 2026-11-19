@@ -48,7 +48,7 @@ export function OnboardingPage({ me }: { me: MyContext }) {
 
 function ProfileStep({ me }: { me: MyContext }) {
   const qc = useQueryClient();
-  const [fullName, setFullName] = useState(me.full_name);
+  const [fullName, setFullName] = useState(/[א-ת]/.test(me.full_name) ? me.full_name : '');
   const [phone, setPhone] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -80,7 +80,7 @@ function ProfileStep({ me }: { me: MyContext }) {
       <h1 className="text-xl font-semibold">נעים להכיר</h1>
       <p className="mt-1 text-sm text-muted">הפרטים משמשים את העמיתים כדי לפנות אליך בוואטסאפ בנוגע למשמרות.</p>
       <form onSubmit={submit} className="mt-6 space-y-5" noValidate>
-        <Field label="שם מלא" error={errors.fullName}>
+        <Field label="שם תצוגה בעברית" hint="השם שיופיע לעמיתים ובמיילים לאחראי הסידור. לדוגמה: ישראל ישראלי" error={errors.fullName}>
           <Input value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" maxLength={80} />
         </Field>
         <Field label="טלפון נייד" hint="מספר ישראלי, לשימוש בוואטסאפ. לא מוצג ברשימות." error={errors.phone}>

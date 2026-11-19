@@ -37,6 +37,13 @@ export function AccessibilityMenu({ withBottomNav }: { withBottomNav: boolean })
   const [prefs, setPrefs] = useState<A11yPrefs>(read);
   const { pref: theme, setPref: setTheme } = useTheme();
 
+  // Other buttons (e.g. in the top bar) open this same menu.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener('shiftex:a11y', onOpen);
+    return () => window.removeEventListener('shiftex:a11y', onOpen);
+  }, []);
+
   useEffect(() => {
     apply(prefs);
     try {
@@ -118,5 +125,20 @@ export function AccessibilityMenu({ withBottomNav }: { withBottomNav: boolean })
         </div>
       </Sheet>
     </>
+  );
+}
+
+/** Inline accessibility button (top bar) that opens the accessibility menu. */
+export function AccessibilityButton({ className }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new Event('shiftex:a11y'))}
+      aria-label="נגישות: גודל טקסט וניגודיות"
+      title="נגישות"
+      className={cn('grid size-10 place-items-center rounded-md text-ink-2 hover:bg-sunken hover:text-ink', className)}
+    >
+      <Accessibility className="size-[18px]" aria-hidden="true" />
+    </button>
   );
 }

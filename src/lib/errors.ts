@@ -29,6 +29,7 @@ const MESSAGES: Record<string, string> = {
   invalid_phone: 'מספר נייד ישראלי לא תקין. לדוגמה: 050-1234567',
   phone_taken: 'מספר הטלפון כבר רשום לחשבון אחר.',
   invalid_name: 'יש להזין שם מלא.',
+  name_not_hebrew: 'יש לכתוב את השם בעברית. השם הזה יופיע במיילים לאחראי הסידור.',
   invalid_avatar: 'קובץ התמונה לא תקין.',
   profile_incomplete: 'יש להשלים קודם את הפרטים האישיים.',
   banned: 'הגישה לחשבון בוטלה.',

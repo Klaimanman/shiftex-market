@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeftRight, Check, Lock, Mail, MessageCircle, Pencil, Trash2, X } from 'lucide-react';
 import { PageHeader, Panel, Section } from '@/components/PageHeader';
 import { Button, ButtonLink } from '@/components/ui/button';
@@ -12,12 +12,13 @@ import { ContactSheet } from '@/components/ContactSheet';
 import { EmailDraftSheet } from '@/components/EmailDraftSheet';
 import { CloseListingSheet } from '@/components/CloseListingSheet';
 import { InterestSheet } from '@/components/InterestSheet';
+import { MatchPanel } from '@/components/MatchPanel';
 import { useMe } from '@/data/session';
 import { useColleagues, useReference, type Reference } from '@/data/reference';
 import { useDeleteListing, useListing, useListingInterests, useMyInterest, useSetInterestStatus, useUpdateListing } from '@/data/listings';
 import { formatLong, formatShort, relativeTimeHe } from '@/domain/dates';
 import { isOpen } from '@/domain/matching';
-import { composeWhatsAppMessage, type TransferEmail } from '@/domain/messages';
+import { composeWhatsAppMessage, NO_SHIFT, type TransferEmail } from '@/domain/messages';
 import { OPTION_LABEL, TYPE_TITLE } from '@/domain/labels';
 import type { Interest, Listing, MiniProfile } from '@/domain/types';
 import { cn } from '@/lib/cn';
@@ -53,6 +54,8 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function Details({ listing: l, reference: r }: { listing: Listing; reference: Reference }) {
+  const [sp] = useSearchParams();
+  const justPublished = sp.get('new') === '1';
   const me = useMe();
   const toast = useToast();
   const colleagues = useColleagues();
@@ -80,18 +83,25 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
 
   const shiftName = l.type === 'seek' ? '' : `${r.shiftTitle(l)}${times ? ` (${times})` : ''}`;
 
+  /**
+   * Coordinator email in the organization's format. guard1 = listing owner, guard2 = the colleague.
+   *  offer:    owner gives the shift          → owner: shift → none,  other: none → shift
+   *  seek:     owner receives a shift          → owner: none → wanted, other: wanted → none
+   *  exchange: both give and receive           → owner: shift → wanted, other: wanted → shift
+   */
   const emailFor = (counterpart: MiniProfile | null | { full_name: string }): TransferEmail => {
     const ownerName = l.owner?.full_name ?? '';
     const otherName = counterpart?.full_name ?? '';
-    const ownerGives = l.type !== 'seek';
+    const given = l.type === 'seek' ? '' : `${shiftName}, ${r.positionName(l.position_id)}`;
+    const wanted = l.type === 'offer' ? '' : wantedSummary(l, r);
+    const owner =
+      l.type === 'offer' ? { current: given, desired: NO_SHIFT } : l.type === 'seek' ? { current: NO_SHIFT, desired: wanted } : { current: given, desired: wanted };
+    const other =
+      l.type === 'offer' ? { current: NO_SHIFT, desired: given } : l.type === 'seek' ? { current: wanted, desired: NO_SHIFT } : { current: wanted, desired: given };
     return {
       date: l.shift_date ?? l.want_dates[0] ?? null,
-      shiftName: shiftName || (l.want_period_ids.length ? l.want_period_ids.map((p) => r.periodLabel(p)).join(' / ') : ''),
-      position: l.position_id ? r.positionName(l.position_id) : l.want_position_ids.length === 1 ? r.positionName(l.want_position_ids[0]) : '',
-      giverName: ownerGives ? ownerName : otherName,
-      receiverName: ownerGives ? otherName : ownerName,
-      isExchange: l.type === 'exchange',
-      returnShift: '',
+      guard1: { name: ownerName, ...owner },
+      guard2: { name: otherName, ...other },
     };
   };
 
@@ -226,6 +236,12 @@ function Details({ listing: l, reference: r }: { listing: Listing; reference: Re
             </Button>
           </div>
           <p className="text-xs text-muted">ShiftEX הוא כלי תיאום בלבד. העברה רשמית מתבצעת מול רכז השיבוץ לפי הנהלים.</p>
+        </div>
+      )}
+
+      {isOwner && open && (
+        <div className="mt-4">
+          <MatchPanel listing={l} reference={r} justPublished={justPublished} />
         </div>
       )}
 

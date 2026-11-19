@@ -43,33 +43,41 @@ export function buildWhatsAppUrl(phoneE164: string, text: string): string {
   return `https://wa.me/${toWhatsAppNumber(phoneE164)}?text=${encodeURIComponent(text)}`;
 }
 
-export interface TransferEmail {
-  date: ISODate | null;
-  shiftName: string;
-  position: string | null;
-  giverName: string;
-  receiverName: string;
-  isExchange?: boolean;
-  returnShift?: string | null;
+/** Text used when a guard has no shift on one side of the swap (plain hand-over). */
+export const NO_SHIFT = 'ללא משמרת';
+
+export interface GuardLine {
+  name: string;
+  /** shift the guard has now */
+  current: string;
+  /** shift the guard wants / receives */
+  desired: string;
 }
 
+export interface TransferEmail {
+  date: ISODate | null;
+  guard1: GuardLine;
+  guard2: GuardLine;
+}
+
+/**
+ * The organization's coordinator email format:
+ *   Subject: החלפת משמרת בתאריך [date]
+ *   Body: greeting, then for each guard: name / current shift / desired shift, then thanks.
+ */
 export function composeCoordinatorEmail(e: TransferEmail): { subject: string; body: string } {
   const dateText = e.date ? formatNumeric(e.date) : '';
-  const subject = e.isExchange ? `בקשה להחלפת משמרות, ${dateText}` : `בקשה להעברת משמרת, ${dateText}`;
+  const block = (g: GuardLine) => [g.name, `משמרת נוכחית: ${g.current}`, `משמרת רצויה: ${g.desired}`];
   const lines = [
-    'שלום,',
+    `שלום וברכה, אבקש החלפת משמרת בתאריך ${dateText}`.trim(),
     '',
-    e.isExchange ? 'אבקש לעדכן על החלפת המשמרות הבאה:' : 'אבקש לעדכן על העברת המשמרת הבאה:',
+    ...block(e.guard1),
     '',
-    `תאריך: ${dateText}`,
-    `משמרת: ${e.shiftName}`,
-    `עמדה: ${e.position ?? ''}`,
-    `מאבטח מוסר: ${e.giverName}`,
-    `מאבטח מקבל: ${e.receiverName}`,
+    ...block(e.guard2),
+    '',
+    'תודה רבה מראש.',
   ];
-  if (e.isExchange) lines.push(`משמרת בתמורה: ${e.returnShift ?? ''}`);
-  lines.push('', 'תודה רבה.');
-  return { subject: subject.trim().replace(/,\s*$/, ''), body: lines.join('\n') };
+  return { subject: `החלפת משמרת בתאריך ${dateText}`.trim(), body: lines.join('\n') };
 }
 
 /** RFC 6068 mailto with CRLF line breaks. The address itself is not percent-encoded. */

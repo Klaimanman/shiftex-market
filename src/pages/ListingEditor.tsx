@@ -152,7 +152,7 @@ function Editor({ initial, listing }: { initial?: ListingFormValues; listing?: L
       } else {
         const saved = await create.mutateAsync({ ...toInput(parsed.data), id: newId.current, org_id: me.orgId, owner_id: me.user_id });
         toast.success('המודעה פורסמה בלוח');
-        navigate(`/listing/${saved.id}`, { replace: true });
+        navigate(`/listing/${saved.id}?new=1`, { replace: true });
       }
     } catch (err) {
       setServerError(errorMessage(err));

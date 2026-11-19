@@ -174,6 +174,14 @@ export function useSetInterestStatus() {
 
 export interface Contact { user_id: string; full_name: string; phone: string | null; email: string | null }
 
+export interface Colleague { user_id: string; full_name: string; email: string }
+
+/** Active colleagues matching a name or email (for the coordinator email CC). */
+export async function searchColleagues(query: string): Promise<Colleague[]> {
+  if (query.trim().length < 2) return [];
+  return (unwrap(await supabase.rpc('search_colleagues', { p_query: query.trim() })) as Colleague[]) ?? [];
+}
+
 export async function fetchContact(listingId: string, userId?: string | null): Promise<Contact> {
   return unwrap(await supabase.rpc('get_contact', { p_listing: listingId, p_user: userId ?? null })) as Contact;
 }

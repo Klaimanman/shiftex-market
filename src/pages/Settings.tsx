@@ -108,7 +108,7 @@ function ProfileForm() {
           </div>
         </div>
         <form onSubmit={submit} className="space-y-5" noValidate>
-          <Field label="שם מלא" error={errors.fullName}>
+          <Field label="שם תצוגה בעברית" hint="השם שיופיע לעמיתים ובמיילים לאחראי הסידור." error={errors.fullName}>
             <Input value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" maxLength={80} />
           </Field>
           <Field label="טלפון נייד" error={errors.phone} hint="משמש לפניות בוואטסאפ.">

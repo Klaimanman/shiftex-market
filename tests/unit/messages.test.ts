@@ -34,11 +34,26 @@ describe('WhatsApp', () => {
 describe('coordinator email', () => {
   it('composes the agreed template and a valid mailto', () => {
     const { subject, body } = composeCoordinatorEmail({
-      date: '2026-11-20', shiftName: 'לילה', position: 'מסוף', giverName: 'א׳ ב׳', receiverName: 'ג׳ ד׳',
+      date: '2026-11-20',
+      guard1: { name: 'ישראל ישראלי', current: 'לילה, מסוף', desired: 'ללא משמרת' },
+      guard2: { name: 'דנה כהן', current: 'ללא משמרת', desired: 'לילה, מסוף' },
     });
-    expect(subject).toBe('בקשה להעברת משמרת, 20.11.2026');
-    expect(body).toContain('מאבטח מוסר: א׳ ב׳');
-    expect(body).toContain('מאבטח מקבל: ג׳ ד׳');
+    expect(subject).toBe('החלפת משמרת בתאריך 20.11.2026');
+    expect(body).toBe(
+      [
+        'שלום וברכה, אבקש החלפת משמרת בתאריך 20.11.2026',
+        '',
+        'ישראל ישראלי',
+        'משמרת נוכחית: לילה, מסוף',
+        'משמרת רצויה: ללא משמרת',
+        '',
+        'דנה כהן',
+        'משמרת נוכחית: ללא משמרת',
+        'משמרת רצויה: לילה, מסוף',
+        '',
+        'תודה רבה מראש.',
+      ].join('\n'),
+    );
     const href = buildMailto('coord@example.com', subject, body);
     expect(href.startsWith('mailto:coord@example.com?subject=')).toBe(true);
     expect(href).toContain('%0D%0A');
@@ -86,6 +101,7 @@ describe('marketplace grouping & filters', () => {
 describe('form validation', () => {
   it('profile requires a name and an Israeli mobile', () => {
     expect(profileSchema.safeParse({ fullName: 'דנה כהן', phone: '050-1234567' }).success).toBe(true);
+    expect(profileSchema.safeParse({ fullName: "Dana Cohen", phone: "050-1234567" }).success).toBe(false);
     expect(profileSchema.safeParse({ fullName: 'ד', phone: '050-1234567' }).success).toBe(false);
     expect(profileSchema.safeParse({ fullName: 'דנה כהן', phone: '02-1234567' }).success).toBe(false);
   });
